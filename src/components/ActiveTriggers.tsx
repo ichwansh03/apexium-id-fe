@@ -44,7 +44,7 @@ const ActiveTriggers: React.FC = () => {
       <div className="search-container">
         <input 
           type="text" 
-          placeholder="Search triggers by name..." 
+          placeholder="Search triggers by name or object..." 
           className="metadata-search-input"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -91,7 +91,7 @@ const ActiveTriggers: React.FC = () => {
       {selectedTrigger && (
         <AddTraceModal 
           entityId={selectedTrigger.sfdcId}
-          entityName={selectedTrigger.name}
+          entityName={`${selectedTrigger.name} on ${selectedTrigger.sobject}`}
           entityType="ApexTrigger"
           onClose={() => setSelectedTrigger(null)}
         />
