@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import type { User } from '../types';
@@ -8,13 +8,16 @@ const ActiveUsers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [size] = useState<number>(10);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const url = searchTerm 
-        ? `/api/sfdc/users/db?name=${encodeURIComponent(searchTerm)}` 
-        : '/api/sfdc/users/db';
+      let url = `/api/sfdc/users/db?page=${page}&size=${size}`;
+      if (searchTerm) {
+        url += `&name=${encodeURIComponent(searchTerm)}`;
+      }
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch users');
       const data = await response.json();
@@ -24,14 +27,17 @@ const ActiveUsers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, size, searchTerm]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchUsers();
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [fetchUsers]);
+
+  const handleNextPage = () => setPage((prev) => prev + 1);
+  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
   if (loading && users.length === 0) return <div className="loading">Loading active users...</div>;
 
@@ -47,7 +53,10 @@ const ActiveUsers: React.FC = () => {
           placeholder="Search users by name..." 
           className="metadata-search-input"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(0);
+          }}
         />
       </div>
 
@@ -88,6 +97,16 @@ const ActiveUsers: React.FC = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="pagination">
+        <button className="pagination-btn" onClick={handlePrevPage} disabled={page === 0 || loading}>
+          Previous
+        </button>
+        <span className="page-info">Page {page + 1}</span>
+        <button className="pagination-btn" onClick={handleNextPage} disabled={users.length < size || loading}>
+          Next
+        </button>
       </div>
 
       {selectedUser && (

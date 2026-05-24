@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
 import type { DebugLevel } from '../types';
 
@@ -6,13 +6,16 @@ const ActiveDebugLevels: React.FC = () => {
   const [levels, setLevels] = useState<DebugLevel[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState<number>(0);
+  const [size] = useState<number>(10);
 
-  const fetchLevels = async () => {
+  const fetchLevels = useCallback(async () => {
     setLoading(true);
     try {
-      const url = searchTerm 
-        ? `/api/sfdc/metadata/debug-levels/db?name=${encodeURIComponent(searchTerm)}` 
-        : '/api/sfdc/metadata/debug-levels/db';
+      let url = `/api/sfdc/metadata/debug-levels/db?page=${page}&size=${size}`;
+      if (searchTerm) {
+        url += `&name=${encodeURIComponent(searchTerm)}`;
+      }
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch debug levels');
       const data = await response.json();
@@ -22,14 +25,17 @@ const ActiveDebugLevels: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, size, searchTerm]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchLevels();
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [fetchLevels]);
+
+  const handleNextPage = () => setPage((prev) => prev + 1);
+  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
   if (loading && levels.length === 0) return <div className="loading">Loading debug levels...</div>;
 
@@ -45,7 +51,10 @@ const ActiveDebugLevels: React.FC = () => {
           placeholder="Search debug levels..." 
           className="metadata-search-input"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(0);
+          }}
         />
       </div>
 
@@ -81,6 +90,16 @@ const ActiveDebugLevels: React.FC = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="pagination">
+        <button className="pagination-btn" onClick={handlePrevPage} disabled={page === 0 || loading}>
+          Previous
+        </button>
+        <span className="page-info">Page {page + 1}</span>
+        <button className="pagination-btn" onClick={handleNextPage} disabled={levels.length < size || loading}>
+          Next
+        </button>
       </div>
     </div>
   );

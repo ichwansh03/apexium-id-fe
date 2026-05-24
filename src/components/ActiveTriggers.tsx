@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import type { ApexTrigger } from '../types';
@@ -8,13 +8,16 @@ const ActiveTriggers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTrigger, setSelectedTrigger] = useState<ApexTrigger | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [size] = useState<number>(10);
 
-  const fetchTriggers = async () => {
+  const fetchTriggers = useCallback(async () => {
     setLoading(true);
     try {
-      const url = searchTerm 
-        ? `/api/sfdc/metadata/triggers/db?name=${encodeURIComponent(searchTerm)}` 
-        : '/api/sfdc/metadata/triggers/db';
+      let url = `/api/sfdc/metadata/triggers/db?page=${page}&size=${size}`;
+      if (searchTerm) {
+        url += `&name=${encodeURIComponent(searchTerm)}`;
+      }
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch triggers');
       const data = await response.json();
@@ -24,14 +27,17 @@ const ActiveTriggers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, size, searchTerm]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchTriggers();
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [fetchTriggers]);
+
+  const handleNextPage = () => setPage((prev) => prev + 1);
+  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
   if (loading && triggers.length === 0) return <div className="loading">Loading apex triggers...</div>;
 
@@ -47,7 +53,10 @@ const ActiveTriggers: React.FC = () => {
           placeholder="Search triggers by name or object..." 
           className="metadata-search-input"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(0);
+          }}
         />
       </div>
 
@@ -86,6 +95,16 @@ const ActiveTriggers: React.FC = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="pagination">
+        <button className="pagination-btn" onClick={handlePrevPage} disabled={page === 0 || loading}>
+          Previous
+        </button>
+        <span className="page-info">Page {page + 1}</span>
+        <button className="pagination-btn" onClick={handleNextPage} disabled={triggers.length < size || loading}>
+          Next
+        </button>
       </div>
 
       {selectedTrigger && (
