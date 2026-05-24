@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import type { Log } from '../types';
 
 const LogList: React.FC = () => {
@@ -12,7 +12,7 @@ const LogList: React.FC = () => {
   const [searchClass, setSearchClass] = useState<string>('');
   const [searchUser, setSearchUser] = useState<string>('');
 
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     try {
       // Using the /db endpoint for searching historical logs
@@ -31,7 +31,7 @@ const LogList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, size, searchClass, searchUser]);
 
   useEffect(() => {
     // Only fetch if both are empty OR at least one has 3+ chars
@@ -44,7 +44,7 @@ const LogList: React.FC = () => {
       void fetchLogs();
     }, 500); // Increased debounce time for better UX
     return () => clearTimeout(timer);
-  }, [page, size, searchClass, searchUser]);
+  }, [fetchLogs, searchClass.length, searchUser.length]);
 
   const handleViewDetail = async (id: string) => {
     setFetchingBody(true);
@@ -94,14 +94,20 @@ const LogList: React.FC = () => {
           type="text" 
           placeholder="Search by Class/Trigger..." 
           value={searchClass}
-          onChange={(e) => setSearchClass(e.target.value)}
+          onChange={(e) => {
+            setSearchClass(e.target.value);
+            setPage(0);
+          }}
           className="search-input"
         />
         <input 
           type="text" 
           placeholder="Search by User..." 
           value={searchUser}
-          onChange={(e) => setSearchUser(e.target.value)}
+          onChange={(e) => {
+            setSearchUser(e.target.value);
+            setPage(0);
+          }}
           className="search-input"
         />
       </div>
