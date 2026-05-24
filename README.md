@@ -3,7 +3,12 @@
 A real-time monitoring dashboard for Salesforce logs and system events. This frontend application provides a user-friendly interface to visualize and manage log tracking across your Salesforce environment.
 
 ## Layout
-![App Layout](./src/assets/hero.png)
+![App Logo](./src/assets/hero.png)
+
+### Dashboard Screenshots
+![Apex Logs Database](./src/assets/Screenshot%202026-05-24%20at%2009.47.58.png)
+![Active Apex Classes](./src/assets/Screenshot%202026-05-24%20at%2009.48.27.png)
+![Debug Levels](./src/assets/Screenshot%202026-05-24%20at%2009.48.38.png)
 
 ## Core Features
 
