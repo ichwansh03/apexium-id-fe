@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TraceFlagManager.css';
+import LoadingSpinner from './LoadingSpinner';
 import type { TraceFlagDto } from '../types';
 
 const TraceFlagManager: React.FC = () => {
@@ -40,7 +41,7 @@ const TraceFlagManager: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="loading">Loading active traces...</div>;
+  if (loading) return <LoadingSpinner message="Fetching active traces..." />;
   if (error) return <div className="error">{error}</div>;
 
   return (

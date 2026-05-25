@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import type { Log } from '../types';
+import LoadingSpinner from './LoadingSpinner';
 
 const LogList: React.FC = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -82,7 +83,7 @@ const LogList: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && logs.length === 0) return <div className="loading">Loading logs...</div>;
+  if (loading && logs.length === 0) return <LoadingSpinner message="Fetching logs..." />;
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
@@ -161,7 +162,7 @@ const LogList: React.FC = () => {
         </div>
       )}
 
-      {fetchingBody && <div className="overlay-loading">Fetching log body...</div>}
+      {fetchingBody && <LoadingSpinner type="overlay" message="Fetching log body..." />}
 
       <div className="pagination">
         <button className="pagination-btn" onClick={handlePrevPage} disabled={page === 0 || loading}>

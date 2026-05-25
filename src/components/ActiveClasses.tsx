@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
+import LoadingSpinner from './LoadingSpinner';
 import type { ApexClass } from '../types';
 
 const ActiveClasses: React.FC = () => {
@@ -39,7 +40,7 @@ const ActiveClasses: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && classes.length === 0) return <div className="loading">Loading apex classes...</div>;
+  if (loading && classes.length === 0) return <LoadingSpinner message="Searching apex classes..." />;
 
   return (
     <div className="page-container metadata-view-container">

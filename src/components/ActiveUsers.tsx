@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
+import LoadingSpinner from './LoadingSpinner';
 import type { User } from '../types';
 
 const ActiveUsers: React.FC = () => {
@@ -39,7 +40,7 @@ const ActiveUsers: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && users.length === 0) return <div className="loading">Loading active users...</div>;
+  if (loading && users.length === 0) return <LoadingSpinner message="Searching users..." />;
 
   return (
     <div className="page-container metadata-view-container">
