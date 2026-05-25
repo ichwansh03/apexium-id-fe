@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './MetadataViews.css';
+import LoadingSpinner from './LoadingSpinner';
 import type { DebugLevel } from '../types';
 
 const ActiveDebugLevels: React.FC = () => {
@@ -37,7 +38,7 @@ const ActiveDebugLevels: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && levels.length === 0) return <div className="loading">Loading debug levels...</div>;
+  if (loading && levels.length === 0) return <LoadingSpinner message="Searching debug levels..." />;
 
   return (
     <div className="page-container metadata-view-container">

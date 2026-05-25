@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AddTraceModal.css';
+import LoadingSpinner from './LoadingSpinner';
 import type { DebugLevel as DebugLevelType } from '../types';
 
 interface AddTraceModalProps {
@@ -97,7 +98,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
             <div className="form-group">
               <label>Debug Level</label>
               {loadingLevels ? (
-                <div className="form-input">Loading...</div>
+                <LoadingSpinner type="inline" message="Loading..." />
               ) : (
                 <select 
                   value={debugLevel} 
