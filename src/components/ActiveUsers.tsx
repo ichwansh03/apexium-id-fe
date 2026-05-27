@@ -65,12 +65,12 @@ const ActiveUsers: React.FC = () => {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th className="col-user-name">Name</th>
+              <th className="col-user-username">Username</th>
+              <th className="col-user-email">Email</th>
+              <th className="col-user-role">Role</th>
+              <th className="col-user-status">Status</th>
+              <th className="col-user-actions">Actions</th>
             </tr>
           </thead>
           <tbody>

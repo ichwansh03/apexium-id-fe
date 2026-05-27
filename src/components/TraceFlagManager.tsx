@@ -55,12 +55,12 @@ const TraceFlagManager: React.FC = () => {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Entity Name</th>
-              <th>Type</th>
-              <th>Debug Level</th>
-              <th>Starts</th>
-              <th>Expires</th>
-              <th>Actions</th>
+              <th className="col-trace-entity">Entity Name</th>
+              <th className="col-trace-type">Type</th>
+              <th className="col-trace-level">Debug Level</th>
+              <th className="col-trace-time">Starts</th>
+              <th className="col-trace-time">Expires</th>
+              <th className="col-trace-actions">Actions</th>
             </tr>
           </thead>
           <tbody>

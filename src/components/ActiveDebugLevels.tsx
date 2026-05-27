@@ -63,13 +63,13 @@ const ActiveDebugLevels: React.FC = () => {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Developer Name</th>
-              <th>Master Label</th>
-              <th>Apex Code</th>
-              <th>Profiling</th>
-              <th>Database</th>
-              <th>System</th>
-              <th>Workflow</th>
+              <th className="col-dl-name">Developer Name</th>
+              <th className="col-dl-label">Master Label</th>
+              <th className="col-dl-level">Apex Code</th>
+              <th className="col-dl-level">Profiling</th>
+              <th className="col-dl-level">Database</th>
+              <th className="col-dl-level">System</th>
+              <th className="col-dl-level">Workflow</th>
             </tr>
           </thead>
           <tbody>
