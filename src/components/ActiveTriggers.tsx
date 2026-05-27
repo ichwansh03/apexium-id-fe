@@ -65,11 +65,11 @@ const ActiveTriggers: React.FC = () => {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>SObject</th>
-              <th>Last Modified</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th className="col-meta-name">Name</th>
+              <th className="col-meta-sobject">SObject</th>
+              <th className="col-meta-date">Last Modified</th>
+              <th className="col-meta-status">Status</th>
+              <th className="col-meta-actions">Actions</th>
             </tr>
           </thead>
           <tbody>

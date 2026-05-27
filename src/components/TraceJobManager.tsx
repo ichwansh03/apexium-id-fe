@@ -66,12 +66,12 @@ const TraceJobManager: React.FC = () => {
         <table className="log-table">
           <thead>
             <tr>
-              <th>Target ID</th>
-              <th>Type</th>
-              <th>Level</th>
-              <th>Status</th>
-              <th>Ends</th>
-              <th>Actions</th>
+              <th className="col-trace-entity">Target ID</th>
+              <th className="col-trace-type">Type</th>
+              <th className="col-trace-level">Level</th>
+              <th className="col-trace-type">Status</th>
+              <th className="col-trace-time">Ends</th>
+              <th className="col-trace-actions">Actions</th>
             </tr>
           </thead>
           <tbody>

@@ -56,3 +56,31 @@
   font-size: 0.9rem;
   color: var(--text);
 }
+
+/* User Table Columns */
+.col-user-name { width: 180px; }
+.col-user-username { width: 220px; }
+.col-user-email { width: 220px; }
+.col-user-role { width: 150px; }
+.col-user-status { width: 100px; }
+.col-user-actions { width: 100px; }
+
+/* Class/Trigger Table Columns */
+.col-meta-name { width: 250px; }
+.col-meta-api { width: 100px; }
+.col-meta-date { width: 150px; }
+.col-meta-status { width: 120px; }
+.col-meta-actions { width: 100px; }
+.col-meta-sobject { width: 200px; }
+
+/* Debug Level Table Columns */
+.col-dl-name { width: 180px; }
+.col-dl-label { width: 180px; }
+.col-dl-level { width: 100px; }
+
+/* Trace Manager Columns */
+.col-trace-entity { width: 200px; }
+.col-trace-type { width: 120px; }
+.col-trace-level { width: 180px; }
+.col-trace-time { width: 120px; }
+.col-trace-actions { width: 100px; }
