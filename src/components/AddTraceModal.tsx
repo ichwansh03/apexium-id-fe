@@ -59,7 +59,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
     }
 
     try {
-      const response = await fetch('/api/sfdc/logs/trace-flags', {
+      const response = await fetch('/api/sfdc/logs/trace-jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -71,13 +71,13 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
       });
 
       if (response.ok) {
-        setMessage({ text: `Successfully created trace flag for ${entityName}`, type: 'success' });
+        setMessage({ text: `Successfully scheduled trace for ${entityName}`, type: 'success' });
         setTimeout(() => onClose(), 1500);
       } else {
-        throw new Error('Failed to create trace flag');
+        throw new Error('Failed to schedule trace');
       }
     } catch (err) {
-      setMessage({ text: err instanceof Error ? err.message : 'Failed to create trace flag', type: 'error' });
+      setMessage({ text: err instanceof Error ? err.message : 'Failed to schedule trace', type: 'error' });
     } finally {
       setSubmitting(false);
     }
