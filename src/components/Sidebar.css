@@ -1,0 +1,146 @@
+.sidebar {
+  background-color: var(--bg);
+  border-right: 1px solid var(--border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.sidebar.open {
+  width: 240px;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: var(--accent-bg);
+  color: var(--accent);
+}
+
+.sidebar-links {
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-link .icon {
+  font-size: 1.4rem;
+  min-width: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-link .label {
+  margin-left: 12px;
+  font-weight: 500;
+}
+
+.sidebar-link:hover {
+  background-color: var(--accent-bg);
+  color: var(--accent);
+}
+
+.sidebar-link.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+.submenu-trigger {
+  justify-content: space-between;
+}
+
+.submenu-trigger .arrow {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding-left: 10px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.submenu-link .dot {
+  margin-right: 10px;
+  opacity: 0.5;
+}
+
+.submenu-link:hover {
+  color: var(--accent);
+  background-color: var(--accent-bg);
+}
+
+.submenu-link.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

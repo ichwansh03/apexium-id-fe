@@ -401,17 +401,38 @@
   color: #ef4444;
 }
 
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .app-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--bg);
 }
 
 .main-content {
   flex-grow: 1;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1400px; /* Slightly wider to accommodate sidebar */
   margin: 0 auto;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%; /* Override centered root */
+  margin: 0;
+  text-align: center;
+  border-inline: none;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
 }
 
