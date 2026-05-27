@@ -24,6 +24,12 @@ const Navbar: React.FC = () => {
           Active Traces
         </NavLink>
         <NavLink 
+          to="/trace-jobs" 
+          className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+        >
+          Trace Jobs
+        </NavLink>
+        <NavLink 
           to="/active-users" 
           className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
         >
