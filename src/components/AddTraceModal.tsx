@@ -29,7 +29,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
           const data = await response.json();
           setAvailableLevels(data);
           // If our default is not in the list, pick the first one
-          if (data.length > 0 && !data.find((l: any) => l.developerName === 'SFDC_DevConsole')) {
+          if (data.length > 0 && !data.some((l: any) => l.developerName === 'SFDC_DevConsole')) {
             setDebugLevel(data[0].developerName);
           }
         }
@@ -49,7 +49,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
 
     let totalMinutes = 1440; // Default 24h
     if (durationMode === 'custom') {
-      totalMinutes = (parseInt(customDays) * 1440) + (parseInt(customHours) * 60) + parseInt(customMinutes);
+      totalMinutes = (Number.parseInt(customDays) * 1440) + (Number.parseInt(customHours) * 60) + Number.parseInt(customMinutes);
     }
 
     if (totalMinutes <= 0) {
@@ -64,6 +64,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tracedEntityId: entityId,
+          tracedEntityName: entityName,
           debugLevelName: debugLevel,
           durationMinutes: totalMinutes,
           entityType: entityType,
@@ -165,8 +166,9 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
                 />
               </div>
               <div className="form-group mini">
-                <label>Mins</label>
+                <label htmlFor="custom-minutes">Mins</label>
                 <input 
+                  id="custom-minutes"
                   type="number" 
                   value={customMinutes} 
                   onChange={(e) => setCustomMinutes(e.target.value)}

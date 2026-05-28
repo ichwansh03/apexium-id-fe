@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './TraceFlagManager.css'; // Reusing styles for consistency
 import LoadingSpinner from './LoadingSpinner';
 import type { TraceFlagDto } from '../types';
@@ -53,31 +53,79 @@ const TraceManagement: React.FC = () => {
 
   const handleDeleteTrace = async (id: string) => {
     if (!window.confirm('Are you sure you want to remove this active trace flag?')) return;
+    
+    // Immediate local removal for responsiveness
+    setTraces(prev => prev.filter(t => t.Id !== id));
+    
     try {
       const response = await fetch(`/api/sfdc/logs/trace-flags/${id}`, { method: 'DELETE' });
-      if (response.ok) {
-        setTraces(prev => prev.filter(t => t.Id !== id));
-      } else {
+      if (!response.ok) {
         throw new Error('Failed to delete');
       }
     } catch (err) {
       alert('Failed to delete trace flag');
+      fetchData(); // Rollback/Refresh on error
     }
   };
 
-  const handleCancelJob = async (id: number) => {
-    if (!window.confirm('Are you sure you want to cancel this scheduled trace job?')) return;
+  const handleDeleteJob = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this trace job?')) return;
+    
+    // Immediate local removal
+    setJobs(prev => prev.filter(j => j.id !== id));
+    
     try {
       const response = await fetch(`/api/sfdc/logs/trace-jobs/${id}`, { method: 'DELETE' });
       if (response.ok) {
-        setJobs(prev => prev.map(j => j.id === id ? { ...j, status: 'CANCELLED' } : j));
+        // Refresh SFDC traces as deleting a job might have cleaned up the underlying trace flag
+        const tracesRes = await fetch('/api/sfdc/logs/trace-flags');
+        if (tracesRes.ok) {
+          setTraces(await tracesRes.json());
+        }
       } else {
-        throw new Error('Failed to cancel');
+        throw new Error('Failed to delete job');
       }
     } catch (err) {
-      alert('Failed to cancel trace job');
+      alert('Failed to delete trace job');
+      fetchData(); // Rollback/Refresh on error
     }
   };
+
+  const combinedData = useMemo(() => {
+    const sfdcIdsFromJobs = new Set(jobs.filter(j => j.status === 'ACTIVE').map(j => j.sfdcTraceFlagId).filter(Boolean));
+    
+    const formattedTraces = traces
+      .filter(t => !sfdcIdsFromJobs.has(t.Id))
+      .map(t => ({
+        id: t.Id,
+        sourceId: t.Id,
+        name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
+        type: t.TracedEntity?.attributes?.type || 'Unknown',
+        level: t.DebugLevel?.DeveloperName || 'Unknown',
+        startTime: t.StartDate || '',
+        endTime: t.ExpirationDate || '',
+        source: 'SFDC' as const,
+        isRecurring: false
+      }));
+
+    const formattedJobs = jobs
+      .filter(j => j.status === 'ACTIVE')
+      .map(j => ({
+        id: `job-${j.id}`,
+        sourceId: j.id.toString(),
+        name: j.tracedEntityName || j.tracedEntityId,
+        type: j.tracedEntityType,
+        level: j.debugLevelName,
+        startTime: j.startTime,
+        endTime: j.endTime,
+        source: 'APP' as const,
+        isRecurring: true
+      }));
+
+    return [...formattedTraces, ...formattedJobs].sort((a, b) => 
+      new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+  }, [traces, jobs]);
 
   if (loading && traces.length === 0 && jobs.length === 0) {
     return <LoadingSpinner message="Loading Trace Dashboard..." />;
@@ -93,84 +141,48 @@ const TraceManagement: React.FC = () => {
       {error && <div className="error">{error}</div>}
 
       <section className="trace-section">
-        <h3>Active Trace Flags (Salesforce)</h3>
         <p style={{ marginBottom: '1.5rem', color: 'var(--text)' }}>
-          Standard 24-hour traces currently active in your Salesforce environment.
+          Unified view of all active Salesforce tracing activities.
         </p>
         <div className="table-wrapper">
           <table className="log-table">
             <thead>
               <tr>
-                <th className="col-trace-entity">Entity Name</th>
+                <th className="col-trace-entity">Target Name</th>
                 <th className="col-trace-type">Type</th>
                 <th className="col-trace-level">Debug Level</th>
+                <th className="col-trace-mode">Mode</th>
                 <th className="col-trace-time">Starts</th>
-                <th className="col-trace-time">Expires</th>
-                <th className="col-trace-actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {traces.map((trace) => (
-                <tr key={trace.Id}>
-                  <td className="font-bold">{trace.TracedEntity?.Name || 'Unknown'}</td>
-                  <td><span className="type-badge">{trace.TracedEntity?.attributes?.type || 'Unknown'}</span></td>
-                  <td>{trace.DebugLevel?.DeveloperName || 'Unknown'}</td>
-                  <td>{trace.StartDate ? new Date(trace.StartDate).toLocaleTimeString() : 'N/A'}</td>
-                  <td>{trace.ExpirationDate ? new Date(trace.ExpirationDate).toLocaleTimeString() : 'N/A'}</td>
-                  <td>
-                    <button className="action-btn delete-btn" onClick={() => handleDeleteTrace(trace.Id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-              {traces.length === 0 && (
-                <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>No active Salesforce trace flags.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="trace-section" style={{ marginTop: '40px' }}>
-        <h3>Scheduled & Recurring Jobs</h3>
-        <p style={{ marginBottom: '1.5rem', color: 'var(--text)' }}>
-          Extended or recurring jobs managed by this application.
-        </p>
-        <div className="table-wrapper">
-          <table className="log-table">
-            <thead>
-              <tr>
-                <th className="col-trace-entity">Target ID / Name</th>
-                <th className="col-trace-type">Type</th>
-                <th className="col-trace-level">Level</th>
-                <th className="col-trace-type">Status</th>
                 <th className="col-trace-time">Ends</th>
                 <th className="col-trace-actions">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {jobs.sort((a, b) => b.id - a.id).map((job) => (
-                <tr key={job.id}>
-                  <td className="font-bold">{job.tracedEntityName || job.tracedEntityId}</td>
-                  <td><span className="type-badge">{job.tracedEntityType}</span></td>
-                  <td>{job.debugLevelName}</td>
+              {combinedData.map((item) => (
+                <tr key={item.id}>
+                  <td className="font-bold">{item.name}</td>
+                  <td><span className="type-badge">{item.type}</span></td>
+                  <td>{item.level}</td>
                   <td>
-                    <span className={`status-badge ${job.status.toLowerCase()}`}>
-                      {job.status}
+                    <span className={`status-badge ${item.isRecurring ? 'recurring' : 'standard'}`}>
+                      {item.isRecurring ? 'Recurring' : 'Standard'}
                     </span>
                   </td>
-                  <td>{new Date(job.endTime).toLocaleString()}</td>
+                  <td>{item.startTime ? new Date(item.startTime).toLocaleString() : 'N/A'}</td>
+                  <td>{item.endTime ? new Date(item.endTime).toLocaleString() : 'N/A'}</td>
                   <td>
-                    {job.status === 'ACTIVE' && (
-                      <button className="action-btn delete-btn" onClick={() => handleCancelJob(job.id)}>Cancel</button>
-                    )}
+                    <button 
+                      className="action-btn delete-btn" 
+                      onClick={() => item.source === 'SFDC' ? handleDeleteTrace(item.sourceId) : handleDeleteJob(parseInt(item.sourceId))}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
-              {jobs.length === 0 && (
+              {combinedData.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>No scheduled trace jobs found.</td>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>No active traces found.</td>
                 </tr>
               )}
             </tbody>
