@@ -79,8 +79,20 @@
 .col-dl-level { width: 100px; }
 
 /* Trace Manager Columns */
-.col-trace-entity { width: 200px; }
-.col-trace-type { width: 120px; }
-.col-trace-level { width: 180px; }
-.col-trace-time { width: 120px; }
+.col-trace-entity { width: 180px; }
+.col-trace-id { width: 160px; }
+.col-trace-type { width: 100px; }
+.col-trace-level { width: 150px; }
+.col-trace-mode { width: 100px; }
+.col-trace-time { width: 160px; }
 .col-trace-actions { width: 100px; }
+
+.status-badge.recurring {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.standard {
+  background-color: #d1fae5;
+  color: #065f46;
+}

@@ -64,6 +64,7 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tracedEntityId: entityId,
+          tracedEntityName: entityName,
           debugLevelName: debugLevel,
           durationMinutes: totalMinutes,
           entityType: entityType,
