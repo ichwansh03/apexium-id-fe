@@ -96,31 +96,43 @@ const TraceManagement: React.FC = () => {
     
     const formattedTraces = traces
       .filter(t => !sfdcIdsFromJobs.has(t.Id))
-      .map(t => ({
-        id: t.Id,
-        sourceId: t.Id,
-        name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
-        type: t.TracedEntity?.attributes?.type || 'Unknown',
-        level: t.DebugLevel?.DeveloperName || 'Unknown',
-        startTime: t.StartDate || '',
-        endTime: t.ExpirationDate || '',
-        source: 'SFDC' as const,
-        isRecurring: false
-      }));
+      .map(t => {
+        const start = t.StartDate ? new Date(t.StartDate).getTime() : 0;
+        const end = t.ExpirationDate ? new Date(t.ExpirationDate).getTime() : 0;
+        const durationHours = start && end ? (end - start) / (1000 * 60 * 60) : 0;
+        
+        return {
+          id: t.Id,
+          sourceId: t.Id,
+          name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
+          type: t.TracedEntity?.attributes?.type || 'Unknown',
+          level: t.DebugLevel?.DeveloperName || 'Unknown',
+          startTime: t.StartDate || '',
+          endTime: t.ExpirationDate || '',
+          source: 'SFDC' as const,
+          isRecurring: durationHours > 24
+        };
+      });
 
     const formattedJobs = jobs
       .filter(j => j.status === 'ACTIVE')
-      .map(j => ({
-        id: `job-${j.id}`,
-        sourceId: j.id.toString(),
-        name: j.tracedEntityName || j.tracedEntityId,
-        type: j.tracedEntityType,
-        level: j.debugLevelName,
-        startTime: j.startTime,
-        endTime: j.endTime,
-        source: 'APP' as const,
-        isRecurring: true
-      }));
+      .map(j => {
+        const start = new Date(j.startTime).getTime();
+        const end = new Date(j.endTime).getTime();
+        const durationHours = (end - start) / (1000 * 60 * 60);
+
+        return {
+          id: `job-${j.id}`,
+          sourceId: j.id.toString(),
+          name: j.tracedEntityName || j.tracedEntityId,
+          type: j.tracedEntityType,
+          level: j.debugLevelName,
+          startTime: j.startTime,
+          endTime: j.endTime,
+          source: 'APP' as const,
+          isRecurring: durationHours > 24
+        };
+      });
 
     return [...formattedTraces, ...formattedJobs].sort((a, b) => 
       new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
