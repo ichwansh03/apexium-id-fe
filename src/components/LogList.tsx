@@ -61,24 +61,10 @@ const LogList: React.FC = () => {
     }
   };
 
-  const handleDownload = async (id: string, operation: string | undefined) => {
-    try {
-      const response = await fetch(`/api/sfdc/logs/${id}/download-url?operation=${encodeURIComponent(operation || '')}`);
-      if (!response.ok) throw new Error('Failed to get download URL');
-      
-      const { url } = await response.json();
-      
-      // Trigger direct download from MinIO using the pre-signed URL
-      const a = document.createElement('a');
-      a.href = url;
-      // The filename is already set in the pre-signed URL's Content-Disposition header
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (err) {
-      console.error('Failed to download log:', err);
-      alert('Failed to download log');
-    }
+  const handleDownload = (id: string, operation: string | undefined) => {
+    // Direct link to the backend download endpoint
+    const url = `/api/sfdc/logs/${id}/download?operation=${encodeURIComponent(operation || '')}`;
+    window.location.href = url;
   };
 
   const handleNextPage = () => setPage((prev) => prev + 1);
