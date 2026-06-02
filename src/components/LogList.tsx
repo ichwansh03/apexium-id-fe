@@ -63,16 +63,17 @@ const LogList: React.FC = () => {
 
   const handleDownload = async (id: string, operation: string | undefined) => {
     try {
-      const response = await fetch(`/api/sfdc/logs/${id}/body`);
-      const body = await response.text();
-      const blob = new Blob([body], { type: 'text/plain' });
-      const url = globalThis.URL.createObjectURL(blob);
+      const response = await fetch(`/api/sfdc/logs/${id}/download-url?operation=${encodeURIComponent(operation || '')}`);
+      if (!response.ok) throw new Error('Failed to get download URL');
+      
+      const { url } = await response.json();
+      
+      // Trigger direct download from MinIO using the pre-signed URL
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${operation || 'log'}_${id}.log`;
+      // The filename is already set in the pre-signed URL's Content-Disposition header
       document.body.appendChild(a);
       a.click();
-      globalThis.URL.revokeObjectURL(url);
       a.remove();
     } catch (err) {
       console.error('Failed to download log:', err);
