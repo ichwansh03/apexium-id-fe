@@ -70,7 +70,12 @@ const LogList: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && logs.length === 0) return <LoadingSpinner message="Fetching logs..." />;
+  if (loading && logs.length === 0) return (
+    <LoadingSpinner 
+      message="Fetching logs..." 
+      description="Connecting to Salesforce to retrieve recent Apex logs. This may take a few seconds." 
+    />
+  );
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
@@ -149,7 +154,20 @@ const LogList: React.FC = () => {
         </div>
       )}
 
-      {fetchingBody && <LoadingSpinner type="overlay" message="Fetching log body..." />}
+      {loading && logs.length > 0 && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Updating logs..." 
+          description="Fetching latest data from background processes."
+        />
+      )}
+      {fetchingBody && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Fetching log body..." 
+          description="Retrieving full trace detail from Salesforce."
+        />
+      )}
 
       <div className="pagination">
         <button className="pagination-btn" onClick={handlePrevPage} disabled={page === 0 || loading}>
