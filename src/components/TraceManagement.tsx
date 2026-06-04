@@ -140,7 +140,12 @@ const TraceManagement: React.FC = () => {
   }, [traces, jobs]);
 
   if (loading && traces.length === 0 && jobs.length === 0) {
-    return <LoadingSpinner message="Loading Trace Dashboard..." />;
+    return (
+      <LoadingSpinner 
+        message="Loading Trace Dashboard..." 
+        description="Consolidating active trace flags and background monitoring jobs." 
+      />
+    );
   }
 
   return (
@@ -201,6 +206,14 @@ const TraceManagement: React.FC = () => {
           </table>
         </div>
       </section>
+
+      {loading && (traces.length > 0 || jobs.length > 0) && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Updating trace dashboard..." 
+          description="Syncing active trace flags and background jobs."
+        />
+      )}
     </div>
   );
 };

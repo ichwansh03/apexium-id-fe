@@ -40,7 +40,12 @@ const ActiveClasses: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && classes.length === 0) return <LoadingSpinner message="Searching apex classes..." />;
+  if (loading && classes.length === 0) return (
+    <LoadingSpinner 
+      message="Searching apex classes..." 
+      description="Scanning Salesforce metadata for available Apex classes." 
+    />
+  );
 
   return (
     <div className="page-container metadata-view-container">
@@ -107,6 +112,14 @@ const ActiveClasses: React.FC = () => {
           Next
         </button>
       </div>
+
+      {loading && classes.length > 0 && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Searching classes..." 
+          description="Refreshing metadata from Salesforce database."
+        />
+      )}
 
       {selectedClass && (
         <AddTraceModal 

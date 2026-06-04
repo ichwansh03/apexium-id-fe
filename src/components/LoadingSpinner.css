@@ -37,6 +37,19 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.loading-description {
+  font-size: 0.85rem;
+  color: var(--text);
+  opacity: 0.8;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
@@ -45,21 +58,26 @@
 /* Overlay Loading */
 .overlay-spinner {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 25px;
+  right: 25px;
   background: var(--bg);
   border: 1px solid var(--accent);
-  padding: 10px 18px;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
   z-index: 2000;
-  box-shadow: var(--shadow);
-  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 5px solid var(--accent);
+}
+
+.overlay-spinner .loading-text {
+  font-size: 1rem;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
+  from { transform: translateX(30px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }

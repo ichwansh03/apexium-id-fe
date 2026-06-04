@@ -40,7 +40,12 @@ const ActiveTriggers: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && triggers.length === 0) return <LoadingSpinner message="Searching apex triggers..." />;
+  if (loading && triggers.length === 0) return (
+    <LoadingSpinner 
+      message="Searching apex triggers..." 
+      description="Scanning Salesforce metadata for available Apex triggers." 
+    />
+  );
 
   return (
     <div className="page-container metadata-view-container">
@@ -107,6 +112,14 @@ const ActiveTriggers: React.FC = () => {
           Next
         </button>
       </div>
+
+      {loading && triggers.length > 0 && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Searching triggers..." 
+          description="Refreshing trigger metadata from Salesforce."
+        />
+      )}
 
       {selectedTrigger && (
         <AddTraceModal 

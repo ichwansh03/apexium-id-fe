@@ -38,7 +38,12 @@ const ActiveDebugLevels: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && levels.length === 0) return <LoadingSpinner message="Searching debug levels..." />;
+  if (loading && levels.length === 0) return (
+    <LoadingSpinner 
+      message="Searching debug levels..." 
+      description="Retrieving available logging configurations from Salesforce." 
+    />
+  );
 
   return (
     <div className="page-container metadata-view-container">
@@ -102,6 +107,14 @@ const ActiveDebugLevels: React.FC = () => {
           Next
         </button>
       </div>
+
+      {loading && levels.length > 0 && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Searching debug levels..." 
+          description="Fetching available trace configurations."
+        />
+      )}
     </div>
   );
 };

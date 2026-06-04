@@ -40,7 +40,12 @@ const ActiveUsers: React.FC = () => {
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
 
-  if (loading && users.length === 0) return <LoadingSpinner message="Searching users..." />;
+  if (loading && users.length === 0) return (
+    <LoadingSpinner 
+      message="Searching users..." 
+      description="Finding active users in your Salesforce organization." 
+    />
+  );
 
   return (
     <div className="page-container metadata-view-container">
@@ -109,6 +114,14 @@ const ActiveUsers: React.FC = () => {
           Next
         </button>
       </div>
+
+      {loading && users.length > 0 && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Searching users..." 
+          description="Retrieving active user records from Salesforce."
+        />
+      )}
 
       {selectedUser && (
         <AddTraceModal 
