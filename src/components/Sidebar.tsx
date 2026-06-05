@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
         <button className="toggle-btn" onClick={toggleSidebar}>
           {isOpen ? '◀' : '▶'}
         </button>
-        {isOpen && <span className="sidebar-logo">Salesforce Obs</span>}
+        {isOpen && <span className="sidebar-logo">Apexium.id</span>}
       </div>
 
       <nav className="sidebar-links">
