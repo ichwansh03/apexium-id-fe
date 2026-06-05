@@ -1,15 +1,12 @@
-# Apexium.id - Frontend
+# Apexium.log - Frontend
 
 A real-time monitoring dashboard for Salesforce logs and system events. This frontend application provides a user-friendly interface to visualize and manage log tracking across your Salesforce environment.
 
-## Layout
-![App Logo](./src/assets/apexium.svg)
-
 ### Dashboard Screenshots
-![Apex Logs Feed](./src/assets/Screenshot%202026-06-05%20at%2022.38.54.png)
-![Trace Management](./src/assets/Screenshot%202026-06-05%20at%2022.39.04.png)
-![Active Resources](./src/assets/Screenshot%202026-06-05%20at%2022.39.47.png)
-![Debug Levels](./src/assets/Screenshot%202026-06-05%20at%2022.39.57.png)
+![Apex Logs Feed](./src/assets/current_logs.png)
+![Trace Management](./src/assets/active_trace.png)
+![Trace Modal](./src/assets/trace_modal.png)
+![Active Resources](./src/assets/apex_class.png)
 
 ## Core Features
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
+import logo from '../assets/apexium.svg';
 import logsIcon from '../assets/clue.png'; 
 import traceIcon from '../assets/track.png';
 import usersIcon from '../assets/user.png';
@@ -19,7 +20,12 @@ const Sidebar: React.FC = () => {
         <button className="toggle-btn" onClick={toggleSidebar}>
           {isOpen ? '◀' : '▶'}
         </button>
-        {isOpen && <span className="sidebar-logo">Apexium.id</span>}
+        {isOpen && (
+          <div className="sidebar-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src={logo} alt="Logo" className="sidebar-custom-icon" />
+            <span className="sidebar-logo">Apexium.log</span>
+          </div>
+        )}
       </div>
 
       <nav className="sidebar-links">
