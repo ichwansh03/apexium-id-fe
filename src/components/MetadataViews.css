@@ -80,7 +80,7 @@
 
 /* Trace Manager Columns */
 .col-trace-entity { width: 180px; }
-.col-trace-id { width: 160px; }
+.col-trace-status { width: 120px; }
 .col-trace-type { width: 100px; }
 .col-trace-level { width: 150px; }
 .col-trace-mode { width: 100px; }

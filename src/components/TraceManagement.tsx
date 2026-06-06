@@ -92,6 +92,9 @@ const TraceManagement: React.FC = () => {
   };
 
   const combinedData = useMemo(() => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
     const sfdcIdsFromJobs = new Set(jobs.filter(j => j.status === 'ACTIVE').map(j => j.sfdcTraceFlagId).filter(Boolean));
     
     const formattedTraces = traces
@@ -110,12 +113,17 @@ const TraceManagement: React.FC = () => {
           startTime: t.StartDate || '',
           endTime: t.ExpirationDate || '',
           source: 'SFDC' as const,
-          isRecurring: durationHours > 24
+          isRecurring: durationHours > 24,
+          status: 'ACTIVE'
         };
       });
 
     const formattedJobs = jobs
-      .filter(j => j.status === 'ACTIVE')
+      .filter(j => {
+        if (j.status === 'ACTIVE') return true;
+        const startTime = new Date(j.startTime);
+        return startTime >= oneWeekAgo;
+      })
       .map(j => {
         const start = new Date(j.startTime).getTime();
         const end = new Date(j.endTime).getTime();
@@ -130,7 +138,8 @@ const TraceManagement: React.FC = () => {
           startTime: j.startTime,
           endTime: j.endTime,
           source: 'APP' as const,
-          isRecurring: durationHours > 24
+          isRecurring: durationHours > 24,
+          status: j.status
         };
       });
 
@@ -169,6 +178,7 @@ const TraceManagement: React.FC = () => {
                 <th className="col-trace-type">Type</th>
                 <th className="col-trace-level">Debug Level</th>
                 <th className="col-trace-mode">Mode</th>
+                <th className="col-trace-status">Status</th>
                 <th className="col-trace-time">Starts</th>
                 <th className="col-trace-time">Ends</th>
                 <th className="col-trace-actions">Actions</th>
@@ -183,6 +193,11 @@ const TraceManagement: React.FC = () => {
                   <td>
                     <span className={`status-badge ${item.isRecurring ? 'recurring' : 'standard'}`}>
                       {item.isRecurring ? 'Recurring' : 'Standard'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`status-badge ${item.status.toLowerCase()}`}>
+                      {item.status}
                     </span>
                   </td>
                   <td>{item.startTime ? new Date(item.startTime).toLocaleString() : 'N/A'}</td>
