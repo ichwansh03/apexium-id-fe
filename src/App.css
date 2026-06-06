@@ -453,3 +453,34 @@
   color: var(--text);
   font-size: 0.9rem;
 }
+
+/* Error Log Highlighting */
+.log-row-error {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+.log-row-error:hover {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+}
+
+.status-text-error {
+  color: #ef4444;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-text-error::before {
+  content: '⚠';
+}
+
+@media (prefers-color-scheme: dark) {
+  .log-row-error {
+    background-color: rgba(248, 113, 113, 0.1) !important;
+  }
+  
+  .status-text-error {
+    color: #f87171;
+  }
+}
