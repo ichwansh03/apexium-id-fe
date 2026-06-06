@@ -11,6 +11,8 @@ export const useLogList = () => {
   const [fetchingBody, setFetchingBody] = useState<boolean>(false);
   const [searchClass, setSearchClass] = useState<string>('');
   const [searchUser, setSearchUser] = useState<string>('');
+  const [errorIds, setErrorIds] = useState<Set<string>>(new Set());
+  const [filterMode, setFilterMode] = useState<'all' | 'errors'>('all');
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
@@ -25,12 +27,50 @@ export const useLogList = () => {
       }
       const data = await response.json();
       setLogs(data as Log[]);
+      
+      // Reset error detection for new page
+      setErrorIds(new Set());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   }, [page, size, searchClass, searchUser]);
+
+  // Deep scan visible logs for errors in body
+  useEffect(() => {
+    if (logs.length === 0) return;
+
+    const scanLogs = async () => {
+      const newErrorIds = new Set<string>();
+      
+      // Parallel fetch and scan
+      await Promise.all(logs.map(async (log) => {
+        // Initial check via status
+        if (log.status && log.status !== 'Success') {
+          newErrorIds.add(log.sfdcId);
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/sfdc/logs/${log.sfdcId}/body`);
+          if (response.ok) {
+            const body = await response.text();
+            const hasError = /FATAL_ERROR|EXCEPTION_THROWN|LIMIT_EXCEEDED|\|ERROR\|/.test(body);
+            if (hasError) {
+              newErrorIds.add(log.sfdcId);
+            }
+          }
+        } catch (err) {
+          console.error(`Failed to scan log ${log.sfdcId}:`, err);
+        }
+      }));
+
+      setErrorIds(newErrorIds);
+    };
+
+    void scanLogs();
+  }, [logs]);
 
   useEffect(() => {
     const shouldFetch = (searchClass.length === 0 && searchUser.length === 0) || 
@@ -76,8 +116,12 @@ export const useLogList = () => {
     setPage(0);
   };
 
+  const displayedLogs = filterMode === 'errors' 
+    ? logs.filter(log => errorIds.has(log.sfdcId))
+    : logs;
+
   return {
-    logs,
+    logs: displayedLogs,
     loading,
     error,
     page,
@@ -87,6 +131,9 @@ export const useLogList = () => {
     fetchingBody,
     searchClass,
     searchUser,
+    errorIds,
+    filterMode,
+    setFilterMode,
     handleViewDetail,
     handleDownload,
     handleNextPage,

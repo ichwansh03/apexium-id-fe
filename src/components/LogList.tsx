@@ -14,6 +14,9 @@ const LogList: React.FC = () => {
     fetchingBody,
     searchClass,
     searchUser,
+    errorIds,
+    filterMode,
+    setFilterMode,
     handleViewDetail,
     handleDownload,
     handleNextPage,
@@ -49,6 +52,15 @@ const LogList: React.FC = () => {
           onChange={(e) => handleSearchUserChange(e.target.value)}
           className="search-input"
         />
+        <select 
+          className="search-input"
+          value={filterMode}
+          onChange={(e) => setFilterMode(e.target.value as 'all' | 'errors')}
+          style={{ width: '180px' }}
+        >
+          <option value="all">All Logs</option>
+          <option value="errors">Unsuccessful Logs</option>
+        </select>
       </div>
 
       <div className="table-wrapper">
@@ -65,20 +77,27 @@ const LogList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {logs.map((log) => (
-              <tr key={log.sfdcId}>
-                <td>{log.requestTime ? new Date(log.requestTime).toLocaleString() : 'N/A'}</td>
-                <td>{log.apexClassName || 'N/A'}</td>
-                <td>{log.operation}</td>
-                <td>{log.authorName || 'N/A'}</td>
-                <td>{log.status}</td>
-                <td>{log.logSize ? `${(log.logSize / 1024).toFixed(2)} KB` : '0 KB'}</td>
-                <td className="actions-cell">
-                  <button className="action-btn view-btn" onClick={() => handleViewDetail(log.sfdcId)}>View</button>
-                  <button className="action-btn download-btn" onClick={() => handleDownload(log.sfdcId, log.operation)}>Download</button>
-                </td>
-              </tr>
-            ))}
+            {logs.map((log) => {
+              const isError = errorIds.has(log.sfdcId);
+              return (
+                <tr key={log.sfdcId} className={isError ? 'log-row-error' : ''}>
+                  <td>{log.requestTime ? new Date(log.requestTime).toLocaleString() : 'N/A'}</td>
+                  <td>{log.apexClassName || 'N/A'}</td>
+                  <td>{log.operation}</td>
+                  <td>{log.authorName || 'N/A'}</td>
+                  <td>
+                    <span className={isError ? 'status-text-error' : ''}>
+                      {log.status}
+                    </span>
+                  </td>
+                  <td>{log.logSize ? `${(log.logSize / 1024).toFixed(2)} KB` : '0 KB'}</td>
+                  <td className="actions-cell">
+                    <button className="action-btn view-btn" onClick={() => handleViewDetail(log.sfdcId)}>View</button>
+                    <button className="action-btn download-btn" onClick={() => handleDownload(log.sfdcId, log.operation)}>Download</button>
+                  </td>
+                </tr>
+              );
+            })}
             {logs.length === 0 && (
               <tr>
                 <td colSpan={7}>No logs found</td>
