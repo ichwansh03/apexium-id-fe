@@ -1,44 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import LoadingSpinner from './LoadingSpinner';
-import type { ApexClass } from '../types';
+import { useActiveClasses } from '../hooks/useActiveClasses';
 
 const ActiveClasses: React.FC = () => {
-  const [classes, setClasses] = useState<ApexClass[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedClass, setSelectedClass] = useState<ApexClass | null>(null);
-  const [page, setPage] = useState<number>(0);
-  const [size] = useState<number>(10);
-
-  const fetchClasses = useCallback(async () => {
-    setLoading(true);
-    try {
-      let url = `/api/sfdc/metadata/classes/db?page=${page}&size=${size}`;
-      if (searchTerm) {
-        url += `&name=${encodeURIComponent(searchTerm)}`;
-      }
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch classes');
-      const data = await response.json();
-      setClasses(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, size, searchTerm]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchClasses();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [fetchClasses]);
-
-  const handleNextPage = () => setPage((prev) => prev + 1);
-  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
+  const {
+    classes,
+    loading,
+    searchTerm,
+    selectedClass,
+    setSelectedClass,
+    page,
+    size,
+    handleNextPage,
+    handlePrevPage,
+    handleSearchChange
+  } = useActiveClasses();
 
   if (loading && classes.length === 0) return (
     <LoadingSpinner 
@@ -59,10 +37,7 @@ const ActiveClasses: React.FC = () => {
           placeholder="Search classes by name..." 
           className="metadata-search-input"
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setPage(0);
-          }}
+          onChange={(e) => handleSearchChange(e.target.value)}
         />
       </div>
 
@@ -134,3 +109,4 @@ const ActiveClasses: React.FC = () => {
 };
 
 export default ActiveClasses;
+

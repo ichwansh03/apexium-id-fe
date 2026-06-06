@@ -1,44 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import LoadingSpinner from './LoadingSpinner';
-import type { User } from '../types';
+import { useActiveUsers } from '../hooks/useActiveUsers';
 
 const ActiveUsers: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [page, setPage] = useState<number>(0);
-  const [size] = useState<number>(10);
-
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      let url = `/api/sfdc/users/db?page=${page}&size=${size}`;
-      if (searchTerm) {
-        url += `&name=${encodeURIComponent(searchTerm)}`;
-      }
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch users');
-      const data = await response.json();
-      setUsers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, size, searchTerm]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchUsers();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [fetchUsers]);
-
-  const handleNextPage = () => setPage((prev) => prev + 1);
-  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
+  const {
+    users,
+    loading,
+    searchTerm,
+    selectedUser,
+    setSelectedUser,
+    page,
+    size,
+    handleNextPage,
+    handlePrevPage,
+    handleSearchChange
+  } = useActiveUsers();
 
   if (loading && users.length === 0) return (
     <LoadingSpinner 
@@ -59,10 +37,7 @@ const ActiveUsers: React.FC = () => {
           placeholder="Search users by name..." 
           className="metadata-search-input"
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setPage(0);
-          }}
+          onChange={(e) => handleSearchChange(e.target.value)}
         />
       </div>
 
@@ -136,3 +111,4 @@ const ActiveUsers: React.FC = () => {
 };
 
 export default ActiveUsers;
+

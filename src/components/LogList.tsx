@@ -1,74 +1,26 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import type { Log } from '../types';
+import React from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import { useLogList } from '../hooks/useLogList';
 
 const LogList: React.FC = () => {
-  const [logs, setLogs] = useState<Log[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(0);
-  const [size] = useState<number>(10);
-  const [selectedLogBody, setSelectedLogBody] = useState<string | null>(null);
-  const [fetchingBody, setFetchingBody] = useState<boolean>(false);
-  const [searchClass, setSearchClass] = useState<string>('');
-  const [searchUser, setSearchUser] = useState<string>('');
-
-  const fetchLogs = useCallback(async () => {
-    setLoading(true);
-    try {
-      // Using the /db endpoint for searching historical logs
-      let url = `/api/sfdc/logs/db?page=${page}&size=${size}`;
-      if (searchClass) url += `&className=${encodeURIComponent(searchClass)}`;
-      if (searchUser) url += `&author=${encodeURIComponent(searchUser)}`;
-      
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch logs');
-      }
-      const data = await response.json();
-      setLogs(data as Log[]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, size, searchClass, searchUser]);
-
-  useEffect(() => {
-    // Only fetch if both are empty OR at least one has 3+ chars
-    const shouldFetch = (searchClass.length === 0 && searchUser.length === 0) || 
-                       (searchClass.length >= 3 || searchUser.length >= 3);
-    
-    if (!shouldFetch) return;
-
-    const timer = setTimeout(() => {
-      void fetchLogs();
-    }, 500); // Increased debounce time for better UX
-    return () => clearTimeout(timer);
-  }, [fetchLogs, searchClass.length, searchUser.length]);
-
-  const handleViewDetail = async (id: string) => {
-    setFetchingBody(true);
-    try {
-      const response = await fetch(`/api/sfdc/logs/${id}/body`);
-      const body = await response.text();
-      setSelectedLogBody(body);
-    } catch (err) {
-      console.error('Failed to fetch log body:', err);
-      alert('Failed to fetch log body');
-    } finally {
-      setFetchingBody(false);
-    }
-  };
-
-  const handleDownload = (id: string, operation: string | undefined) => {
-    // Direct link to the backend download endpoint
-    const url = `/api/sfdc/logs/${id}/download?operation=${encodeURIComponent(operation || '')}`;
-    window.location.href = url;
-  };
-
-  const handleNextPage = () => setPage((prev) => prev + 1);
-  const handlePrevPage = () => setPage((prev) => Math.max(0, prev - 1));
+  const {
+    logs,
+    loading,
+    error,
+    page,
+    size,
+    selectedLogBody,
+    setSelectedLogBody,
+    fetchingBody,
+    searchClass,
+    searchUser,
+    handleViewDetail,
+    handleDownload,
+    handleNextPage,
+    handlePrevPage,
+    handleSearchClassChange,
+    handleSearchUserChange
+  } = useLogList();
 
   if (loading && logs.length === 0) return (
     <LoadingSpinner 
@@ -87,20 +39,14 @@ const LogList: React.FC = () => {
           type="text" 
           placeholder="Search by Class/Trigger..." 
           value={searchClass}
-          onChange={(e) => {
-            setSearchClass(e.target.value);
-            setPage(0);
-          }}
+          onChange={(e) => handleSearchClassChange(e.target.value)}
           className="search-input"
         />
         <input 
           type="text" 
           placeholder="Search by User..." 
           value={searchUser}
-          onChange={(e) => {
-            setSearchUser(e.target.value);
-            setPage(0);
-          }}
+          onChange={(e) => handleSearchUserChange(e.target.value)}
           className="search-input"
         />
       </div>
@@ -183,3 +129,4 @@ const LogList: React.FC = () => {
 };
 
 export default LogList;
+
