@@ -53,3 +53,18 @@
   background-color: #ef4444;
   color: white;
 }
+
+.status-badge.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.completed, .status-badge.expired {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
