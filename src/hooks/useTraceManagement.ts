@@ -54,11 +54,11 @@ export const useTraceManagement = () => {
   const handleDeleteTrace = async (id: string) => {
     if (!window.confirm('Are you sure you want to remove this active trace flag?')) return;
     
-    setTraces(prev => prev.filter(t => t.Id !== id));
-    
     try {
       const response = await fetch(`/api/sfdc/logs/trace-flags/${id}`, { method: 'DELETE' });
-      if (!response.ok) {
+      if (response.ok) {
+        await fetchData();
+      } else {
         throw new Error('Failed to delete');
       }
     } catch {
@@ -70,15 +70,10 @@ export const useTraceManagement = () => {
   const handleDeleteJob = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this trace job?')) return;
     
-    setJobs(prev => prev.filter(j => j.id !== id));
-    
     try {
       const response = await fetch(`/api/sfdc/logs/trace-jobs/${id}`, { method: 'DELETE' });
       if (response.ok) {
-        const tracesRes = await fetch('/api/sfdc/logs/trace-flags');
-        if (tracesRes.ok) {
-          setTraces(await tracesRes.json());
-        }
+        await fetchData();
       } else {
         throw new Error('Failed to delete job');
       }
@@ -142,9 +137,20 @@ export const useTraceManagement = () => {
         };
       });
 
-    return [...formattedTraces, ...formattedJobs].sort((a, b) => 
+    const allData = [...formattedTraces, ...formattedJobs].sort((a, b) => 
       new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
     );
+
+    // Deduplicate by entity: keep only the latest trace per entity
+    const latestByEntity = new Map<string, typeof allData[0]>();
+    allData.forEach(item => {
+      const key = `${item.tracedEntityId}-${item.type}`;
+      if (!latestByEntity.has(key)) {
+        latestByEntity.set(key, item);
+      }
+    });
+
+    return Array.from(latestByEntity.values());
   }, [traces, jobs]);
 
   return {
