@@ -1,6 +1,7 @@
 import React from 'react';
 import './TraceFlagManager.css';
 import LoadingSpinner from './LoadingSpinner';
+import AddTraceModal from './AddTraceModal';
 import { useTraceManagement } from '../hooks/useTraceManagement';
 
 const TraceManagement: React.FC = () => {
@@ -12,7 +13,9 @@ const TraceManagement: React.FC = () => {
     fetchData,
     handleDeleteTrace,
     handleDeleteJob,
-    combinedData
+    combinedData,
+    selectedTrace,
+    setSelectedTrace
   } = useTraceManagement();
 
   if (loading && traces.length === 0 && jobs.length === 0) {
@@ -70,12 +73,21 @@ const TraceManagement: React.FC = () => {
                   <td>{item.startTime ? new Date(item.startTime).toLocaleString() : 'N/A'}</td>
                   <td>{item.endTime ? new Date(item.endTime).toLocaleString() : 'N/A'}</td>
                   <td>
-                    <button 
-                      className="action-btn delete-btn" 
-                      onClick={() => item.source === 'SFDC' ? handleDeleteTrace(item.sourceId) : handleDeleteJob(parseInt(item.sourceId))}
-                    >
-                      Delete
-                    </button>
+                    {item.status === 'CANCELLED' ? (
+                      <button 
+                        className="action-btn reactivate-btn" 
+                        onClick={() => setSelectedTrace({ id: item.tracedEntityId, name: item.name, type: item.type })}
+                      >
+                        Reactivate
+                      </button>
+                    ) : (
+                      <button 
+                        className="action-btn delete-btn" 
+                        onClick={() => item.source === 'SFDC' ? handleDeleteTrace(item.sourceId) : handleDeleteJob(parseInt(item.sourceId))}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -94,6 +106,18 @@ const TraceManagement: React.FC = () => {
           type="overlay" 
           message="Updating trace dashboard..." 
           description="Syncing active trace flags and background jobs."
+        />
+      )}
+
+      {selectedTrace && (
+        <AddTraceModal 
+          entityId={selectedTrace.id}
+          entityName={selectedTrace.name}
+          entityType={selectedTrace.type}
+          onClose={() => {
+            setSelectedTrace(null);
+            fetchData();
+          }}
         />
       )}
     </div>

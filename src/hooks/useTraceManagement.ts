@@ -18,6 +18,7 @@ export const useTraceManagement = () => {
   const [jobs, setJobs] = useState<TraceJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTrace, setSelectedTrace] = useState<{id: string, name: string, type: string} | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -103,6 +104,7 @@ export const useTraceManagement = () => {
         return {
           id: t.Id,
           sourceId: t.Id,
+          tracedEntityId: t.TracedEntityId,
           name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
           type: t.TracedEntity?.attributes?.type || 'Unknown',
           level: t.DebugLevel?.DeveloperName || 'Unknown',
@@ -128,6 +130,7 @@ export const useTraceManagement = () => {
         return {
           id: `job-${j.id}`,
           sourceId: j.id.toString(),
+          tracedEntityId: j.tracedEntityId,
           name: j.tracedEntityName || j.tracedEntityId,
           type: j.tracedEntityType,
           level: j.debugLevelName,
@@ -152,6 +155,8 @@ export const useTraceManagement = () => {
     fetchData,
     handleDeleteTrace,
     handleDeleteJob,
-    combinedData
+    combinedData,
+    selectedTrace,
+    setSelectedTrace
   };
 };
