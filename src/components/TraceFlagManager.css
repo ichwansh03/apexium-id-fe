@@ -54,6 +54,16 @@
   color: white;
 }
 
+.reactivate-btn {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.reactivate-btn:hover {
+  background-color: #3b82f6;
+  color: white;
+}
+
 .status-badge.active {
   background-color: #d1fae5;
   color: #065f46;
