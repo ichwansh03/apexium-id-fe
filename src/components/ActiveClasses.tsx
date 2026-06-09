@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
+import MetadataDetailModal from './MetadataDetailModal';
 import LoadingSpinner from './LoadingSpinner';
 import { useActiveClasses } from '../hooks/useActiveClasses';
+import type { ApexClass } from '../types';
 
 const ActiveClasses: React.FC = () => {
   const {
@@ -17,6 +19,8 @@ const ActiveClasses: React.FC = () => {
     handlePrevPage,
     handleSearchChange
   } = useActiveClasses();
+
+  const [detailClass, setDetailClass] = useState<ApexClass | null>(null);
 
   if (loading && classes.length === 0) return (
     <LoadingSpinner 
@@ -59,12 +63,18 @@ const ActiveClasses: React.FC = () => {
                 <td>{cls.apiVersion}</td>
                 <td>{new Date(cls.lastModifiedDate).toLocaleDateString()}</td>
                 <td><span className="status-badge">{cls.status}</span></td>
-                <td>
+                <td className="actions-cell">
                   <button 
                     className="action-btn" 
                     onClick={() => setSelectedClass(cls)}
                   >
                     Trace
+                  </button>
+                  <button 
+                    className="action-btn view-btn" 
+                    onClick={() => setDetailClass(cls)}
+                  >
+                    Details
                   </button>
                 </td>
               </tr>
@@ -102,6 +112,14 @@ const ActiveClasses: React.FC = () => {
           entityName={selectedClass.name}
           entityType="ApexClass"
           onClose={() => setSelectedClass(null)}
+        />
+      )}
+
+      {detailClass && (
+        <MetadataDetailModal 
+          entityId={detailClass.sfdcId}
+          entityType="ApexClass"
+          onClose={() => setDetailClass(null)}
         />
       )}
     </div>

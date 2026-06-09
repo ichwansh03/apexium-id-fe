@@ -34,6 +34,15 @@ export interface ApexLogDto {
   apexClassName?: string; 
 }
 
+export interface ApexClassDto {
+  Id: string;
+  Name?: string;
+  ApiVersion?: number;
+  Status?: string;
+  LastModifiedDate?: string;
+  LastModifiedBy?: UserSummaryDto;
+}
+
 export interface User {
   sfdcId: string;
   name: string;
@@ -71,6 +80,19 @@ export interface DebugLevel {
   validation: string;
   visualforce: string;
   workflow: string;
+}
+
+export interface MetadataDetailDto {
+  id: string;
+  name: string;
+  type: string;
+  apiVersion: number | null;
+  status: string | null;
+  lastModifiedDate: string | null;
+  lastModifiedByName: string | null;
+  targetObject?: string | null;
+  triggerEvents: string[];
+  testClasses: ApexClassDto[];
 }
 
 /**
