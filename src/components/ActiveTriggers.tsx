@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
+import MetadataDetailModal from './MetadataDetailModal';
 import LoadingSpinner from './LoadingSpinner';
 import { useActiveTriggers } from '../hooks/useActiveTriggers';
+import type { ApexTrigger } from '../types';
 
 const ActiveTriggers: React.FC = () => {
   const {
@@ -17,6 +19,8 @@ const ActiveTriggers: React.FC = () => {
     handlePrevPage,
     handleSearchChange
   } = useActiveTriggers();
+
+  const [detailTrigger, setDetailTrigger] = useState<ApexTrigger | null>(null);
 
   if (loading && triggers.length === 0) return (
     <LoadingSpinner 
@@ -59,12 +63,18 @@ const ActiveTriggers: React.FC = () => {
                 <td className="api-name">{trigger.sobject}</td>
                 <td>{new Date(trigger.lastModifiedDate).toLocaleDateString()}</td>
                 <td><span className="status-badge">{trigger.status}</span></td>
-                <td>
+                <td className="actions-cell">
                   <button 
                     className="action-btn" 
                     onClick={() => setSelectedTrigger(trigger)}
                   >
                     Trace
+                  </button>
+                  <button 
+                    className="action-btn view-btn" 
+                    onClick={() => setDetailTrigger(trigger)}
+                  >
+                    Details
                   </button>
                 </td>
               </tr>
@@ -102,6 +112,14 @@ const ActiveTriggers: React.FC = () => {
           entityName={`${selectedTrigger.name} on ${selectedTrigger.sobject}`}
           entityType="ApexTrigger"
           onClose={() => setSelectedTrigger(null)}
+        />
+      )}
+
+      {detailTrigger && (
+        <MetadataDetailModal 
+          entityId={detailTrigger.sfdcId}
+          entityType="ApexTrigger"
+          onClose={() => setDetailTrigger(null)}
         />
       )}
     </div>
