@@ -96,3 +96,22 @@
   background-color: #d1fae5;
   color: #065f46;
 }
+
+.col-meta-coverage { width: 100px; }
+
+.coverage-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.coverage-badge.good {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.coverage-badge.poor {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

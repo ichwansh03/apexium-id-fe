@@ -58,6 +58,8 @@ export interface ApexClass {
   apiVersion: string;
   status: string;
   lastModifiedDate: string;
+  numLinesCovered?: number;
+  numLinesUncovered?: number;
 }
 
 export interface ApexTrigger {
@@ -66,6 +68,8 @@ export interface ApexTrigger {
   sobject: string;
   status: string;
   lastModifiedDate: string;
+  numLinesCovered?: number;
+  numLinesUncovered?: number;
 }
 
 export interface DebugLevel {
@@ -82,6 +86,12 @@ export interface DebugLevel {
   workflow: string;
 }
 
+export interface ApexCodeCoverageDto {
+  apexClassOrTriggerId: string;
+  numLinesCovered: number;
+  numLinesUncovered: number;
+}
+
 export interface MetadataDetailDto {
   id: string;
   name: string;
@@ -93,6 +103,7 @@ export interface MetadataDetailDto {
   targetObject?: string | null;
   triggerEvents: string[];
   testClasses: ApexClassDto[];
+  coverage?: ApexCodeCoverageDto | null;
 }
 
 /**

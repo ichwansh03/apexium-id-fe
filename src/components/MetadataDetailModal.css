@@ -65,6 +65,70 @@
   color: var(--text-h);
 }
 
+.coverage-info {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  background: var(--code-bg);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.coverage-main {
+  text-align: center;
+}
+
+.coverage-percent {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.coverage-percent.good {
+  color: #10b981;
+}
+
+.coverage-percent.poor {
+  color: #ef4444;
+}
+
+.coverage-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-top: 5px;
+}
+
+.coverage-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  font-size: 0.9rem;
+}
+
+.stat-label {
+  color: var(--text);
+}
+
+.stat-value {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.stat-value.good {
+  color: #10b981;
+}
+
+.stat-value.poor {
+  color: #ef4444;
+}
+
 .events-list {
   display: flex;
   flex-wrap: wrap;

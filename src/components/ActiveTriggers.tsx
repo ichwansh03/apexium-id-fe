@@ -29,6 +29,13 @@ const ActiveTriggers: React.FC = () => {
     />
   );
 
+  const calculateCoverage = (covered?: number, uncovered?: number) => {
+    if (covered === undefined || uncovered === undefined) return 'N/A';
+    const total = covered + uncovered;
+    if (total === 0) return '0%';
+    return `${Math.round((covered / total) * 100)}%`;
+  };
+
   return (
     <div className="page-container metadata-view-container">
       <div className="metadata-header">
@@ -51,6 +58,7 @@ const ActiveTriggers: React.FC = () => {
             <tr>
               <th className="col-meta-name">Name</th>
               <th className="col-meta-sobject">SObject</th>
+              <th className="col-meta-coverage">Coverage</th>
               <th className="col-meta-date">Last Modified</th>
               <th className="col-meta-status">Status</th>
               <th className="col-meta-actions">Actions</th>
@@ -61,6 +69,13 @@ const ActiveTriggers: React.FC = () => {
               <tr key={trigger.sfdcId}>
                 <td className="entity-name">{trigger.name}</td>
                 <td className="api-name">{trigger.sobject}</td>
+                <td className="coverage-cell">
+                  <span className={`coverage-badge ${
+                    parseInt(calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)) >= 75 ? 'good' : 'poor'
+                  }`}>
+                    {calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)}
+                  </span>
+                </td>
                 <td>{new Date(trigger.lastModifiedDate).toLocaleDateString()}</td>
                 <td><span className="status-badge">{trigger.status}</span></td>
                 <td className="actions-cell">
@@ -81,7 +96,7 @@ const ActiveTriggers: React.FC = () => {
             ))}
             {triggers.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>No triggers found</td>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>No triggers found</td>
               </tr>
             )}
           </tbody>
