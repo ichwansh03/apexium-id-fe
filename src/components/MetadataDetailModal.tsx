@@ -84,6 +84,38 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
                 )}
               </div>
 
+              {detail.coverage && (
+                <div className="detail-section coverage-section">
+                  <h4>Recent Code Coverage</h4>
+                  <div className="coverage-info">
+                    <div className="coverage-main">
+                      <div className={`coverage-percent ${
+                        (detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) >= 0.75 ? 'good' : 'poor'
+                      }`}>
+                        {Math.round((detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) * 100)}%
+                      </div>
+                      <div className="coverage-label">Lines Covered</div>
+                    </div>
+                    <div className="coverage-stats">
+                      <div className="stat-item">
+                        <span className="stat-label">Covered Lines:</span>
+                        <span className="stat-value good">{detail.coverage.numLinesCovered}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Uncovered Lines:</span>
+                        <span className="stat-value poor">{detail.coverage.numLinesUncovered}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Total Lines:</span>
+                        <span className="stat-value">
+                          {detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {detail.triggerEvents.length > 0 && (
                 <div className="detail-section">
                   <h4>Trigger Events</h4>
