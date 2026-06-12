@@ -251,6 +251,7 @@
 .actions-cell {
   display: flex;
   gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .action-btn {
@@ -262,6 +263,7 @@
   background: transparent;
   color: var(--accent);
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .action-btn:hover {
