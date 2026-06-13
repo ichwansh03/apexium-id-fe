@@ -90,9 +90,11 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
                   <div className="coverage-info">
                     <div className="coverage-main">
                       <div className={`coverage-percent ${
-                        (detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) >= 0.75 ? 'good' : 'poor'
+                        ((detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered) > 0 && (detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) >= 0.75) ? 'good' : 'poor'
                       }`}>
-                        {Math.round((detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) * 100)}%
+                        {(detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered) > 0 
+                          ? Math.round((detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) * 100) 
+                          : 0}%
                       </div>
                       <div className="coverage-label">Lines Covered</div>
                     </div>
