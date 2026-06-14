@@ -41,45 +41,47 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
         </div>
 
         <div className="modal-body">
-          {loading ? (
+          {loading && (
             <LoadingSpinner message="Fetching details..." description="Retrieving deep metadata from Salesforce Tooling API." />
-          ) : error ? (
+          )}
+          {error && (
             <div className="error-message">{error}</div>
-          ) : detail ? (
+          )}
+          {detail && (
             <div className="detail-container">
               <div className="detail-grid">
                 <div className="detail-item">
-                  <label>Name</label>
-                  <div className="detail-value highlight">{detail.name}</div>
+                  <label htmlFor="detail-name">Name</label>
+                  <div id="detail-name" className="detail-value highlight">{detail.name}</div>
                 </div>
                 <div className="detail-item">
-                  <label>Type</label>
-                  <div className="detail-value">{detail.type}</div>
+                  <label htmlFor="detail-type">Type</label>
+                  <div id="detail-type" className="detail-value">{detail.type}</div>
                 </div>
                 <div className="detail-item">
-                  <label>API Version</label>
-                  <div className="detail-value">{detail.apiVersion}</div>
+                  <label htmlFor="detail-apiVersion">API Version</label>
+                  <div id="detail-apiVersion" className="detail-value">{detail.apiVersion}</div>
                 </div>
                 <div className="detail-item">
-                  <label>Status</label>
-                  <div className="detail-value">
+                  <label htmlFor="detail-status">Status</label>
+                  <div id="detail-status" className="detail-value">
                     <span className="status-badge">{detail.status}</span>
                   </div>
                 </div>
                 <div className="detail-item">
-                  <label>Last Modified By</label>
-                  <div className="detail-value">{detail.lastModifiedByName || 'N/A'}</div>
+                  <label htmlFor="detail-lastModifiedBy">Last Modified By</label>
+                  <div id="detail-lastModifiedBy" className="detail-value">{detail.lastModifiedByName || 'N/A'}</div>
                 </div>
                 <div className="detail-item">
-                  <label>Last Modified Date</label>
-                  <div className="detail-value">
+                  <label htmlFor="detail-lastModifiedDate">Last Modified Date</label>
+                  <div id="detail-lastModifiedDate" className="detail-value">
                     {detail.lastModifiedDate ? new Date(detail.lastModifiedDate).toLocaleString() : 'N/A'}
                   </div>
                 </div>
                 {detail.targetObject && (
                   <div className="detail-item full-width">
-                    <label>Target SObject</label>
-                    <div className="detail-value code">{detail.targetObject}</div>
+                    <label htmlFor="detail-targetObject">Target SObject</label>
+                    <div id="detail-targetObject" className="detail-value code">{detail.targetObject}</div>
                   </div>
                 )}
               </div>
@@ -89,12 +91,33 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
                   <h4>Recent Code Coverage</h4>
                   <div className="coverage-info">
                     <div className="coverage-main">
-                      <div className={`coverage-percent ${
-                        ((detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered) > 0 && (detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) >= 0.75) ? 'good' : 'poor'
-                      }`}>
-                        {(detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered) > 0 
-                          ? Math.round((detail.coverage.numLinesCovered / (detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered)) * 100) 
-                          : 0}%
+                      {(() => {
+                        const totalLines = detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered;
+                        const coveragePercentage = totalLines > 0 ? (detail.coverage.numLinesCovered / totalLines) : 0;
+                        const coverageStatus = coveragePercentage >= 0.75 ? 'good' : 'poor';
+                        const coveragePercent = totalLines > 0 ? Math.round(coveragePercentage * 100) : 0;
+                        return (
+                          <div className={`coverage-percent ${coverageStatus}`}>
+                            {coveragePercent}%
+                          </div>
+                        );
+                      })()}
+                      <div className="coverage-label">Lines Covered</div>
+                    </div>
+                    <div className="coverage-stats">
+                      <div className="stat-item">
+                        <span className="stat-label">Covered Lines:</span>
+                        <span className="stat-value good">{detail.coverage.numLinesCovered}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Uncovered Lines:</span>
+                        <span className="stat-value poor">{detail.coverage.numLinesUncovered}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Total Lines:</span>
+                        <span className="stat-value">
+                          {detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered}
+                        </span>
                       </div>
                       <div className="coverage-label">Lines Covered</div>
                     </div>
@@ -145,7 +168,8 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
                 )}
               </div>
             </div>
-          ) : null}
+          ) 
+          }
         </div>
 
         <div className="modal-footer">
