@@ -247,6 +247,53 @@
 .col-status { width: 90px; }
 .col-size { width: 80px; }
 .col-actions { width: 170px; }
+.col-select { width: 40px; text-align: center; }
+
+.bulk-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: flex-end;
+}
+
+.delete-btn-bulk {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.delete-btn-bulk:hover:not(:disabled) {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-btn-bulk:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.delete-btn-all {
+  background-color: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.delete-btn-all:hover {
+  background-color: #dc2626;
+}
+
+.select-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
 
 .actions-cell {
   display: flex;
@@ -463,6 +510,10 @@
 
 .log-row-error:hover {
   background-color: rgba(239, 68, 68, 0.12) !important;
+}
+
+.log-row-selected {
+  background-color: var(--accent-bg) !important;
 }
 
 .status-text-error {
