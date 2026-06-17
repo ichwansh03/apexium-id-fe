@@ -17,8 +17,15 @@ const LogList: React.FC = () => {
     errorIds,
     filterMode,
     setFilterMode,
+    selectedIds,
+    deleting,
     handleViewDetail,
     handleDownload,
+    handleDeleteLog,
+    handleDeleteSelected,
+    handleDeleteAll,
+    toggleSelect,
+    toggleSelectAll,
     handleNextPage,
     handlePrevPage,
     handleSearchClassChange,
@@ -63,10 +70,35 @@ const LogList: React.FC = () => {
         </select>
       </div>
 
+      <div className="bulk-actions">
+        <button 
+          className="delete-btn-bulk" 
+          onClick={handleDeleteSelected}
+          disabled={selectedIds.size === 0 || deleting}
+        >
+          Delete Selected ({selectedIds.size})
+        </button>
+        <button 
+          className="delete-btn-bulk delete-btn-all" 
+          onClick={handleDeleteAll}
+          disabled={deleting}
+        >
+          Delete All from SFDC
+        </button>
+      </div>
+
       <div className="table-wrapper">
         <table className="log-table">
           <thead>
             <tr>
+              <th className="col-select">
+                <input 
+                  type="checkbox" 
+                  className="select-checkbox"
+                  checked={logs.length > 0 && selectedIds.size === logs.length}
+                  onChange={toggleSelectAll}
+                />
+              </th>
               <th className="col-time">Time</th>
               <th className="col-class">Class/Trigger</th>
               <th className="col-op">Operation</th>
@@ -79,8 +111,17 @@ const LogList: React.FC = () => {
           <tbody>
             {logs.map((log) => {
               const isError = errorIds.has(log.sfdcId);
+              const isSelected = selectedIds.has(log.sfdcId);
               return (
-                <tr key={log.sfdcId} className={isError ? 'log-row-error' : ''}>
+                <tr key={log.sfdcId} className={`${isError ? 'log-row-error' : ''} ${isSelected ? 'log-row-selected' : ''}`}>
+                  <td className="col-select">
+                    <input 
+                      type="checkbox" 
+                      className="select-checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleSelect(log.sfdcId)}
+                    />
+                  </td>
                   <td>{log.requestTime ? new Date(log.requestTime).toLocaleString() : 'N/A'}</td>
                   <td>{log.apexClassName || 'N/A'}</td>
                   <td>{log.operation}</td>
@@ -94,13 +135,14 @@ const LogList: React.FC = () => {
                   <td className="actions-cell">
                     <button className="action-btn view-btn" onClick={() => handleViewDetail(log.sfdcId)}>View</button>
                     <button className="action-btn download-btn" onClick={() => handleDownload(log.sfdcId, log.operation)}>Download</button>
+                    <button className="action-btn delete-btn" onClick={() => handleDeleteLog(log.sfdcId)}>Delete</button>
                   </td>
                 </tr>
               );
             })}
             {logs.length === 0 && (
               <tr>
-                <td colSpan={7}>No logs found</td>
+                <td colSpan={8}>No logs found</td>
               </tr>
             )}
           </tbody>
@@ -124,6 +166,13 @@ const LogList: React.FC = () => {
           type="overlay" 
           message="Updating logs..." 
           description="Fetching latest data from background processes."
+        />
+      )}
+      {deleting && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Deleting logs..." 
+          description="Removing debug logs from Salesforce Tooling API."
         />
       )}
       {fetchingBody && (
