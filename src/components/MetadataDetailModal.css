@@ -3,6 +3,11 @@
   width: 100%;
 }
 
+.metadata-detail-modal .modal-body {
+  overflow-y: auto;
+  flex: 1;
+}
+
 .detail-container {
   padding: 10px;
 }
