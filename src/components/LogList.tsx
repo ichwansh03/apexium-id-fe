@@ -21,7 +21,6 @@ const LogList: React.FC = () => {
     deleting,
     handleViewDetail,
     handleDownload,
-    handleDeleteLog,
     handleDeleteSelected,
     handleDeleteAll,
     toggleSelect,
@@ -135,7 +134,6 @@ const LogList: React.FC = () => {
                   <td className="actions-cell">
                     <button className="action-btn view-btn" onClick={() => handleViewDetail(log.sfdcId)}>View</button>
                     <button className="action-btn download-btn" onClick={() => handleDownload(log.sfdcId, log.operation)}>Download</button>
-                    <button className="action-btn delete-btn" onClick={() => handleDeleteLog(log.sfdcId)}>Delete</button>
                   </td>
                 </tr>
               );
