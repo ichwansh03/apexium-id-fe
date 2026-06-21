@@ -13,20 +13,26 @@ export interface TraceJob {
   sfdcTraceFlagId: string | null;
 }
 
+export type ViewMode = 'managed' | 'salesforce';
+
 export const useTraceManagement = () => {
   const [traces, setTraces] = useState<TraceFlagDto[]>([]);
   const [jobs, setJobs] = useState<TraceJob[]>([]);
+  const [allSfdcTraceFlags, setAllSfdcTraceFlags] = useState<TraceFlagDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTrace, setSelectedTrace] = useState<{id: string, name: string, type: string} | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('managed');
+  const [adoptingId, setAdoptingId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [tracesRes, jobsRes] = await Promise.all([
+      const [tracesRes, jobsRes, allFlagsRes] = await Promise.all([
         fetch('/api/sfdc/logs/trace-flags'),
-        fetch('/api/sfdc/logs/trace-jobs')
+        fetch('/api/sfdc/logs/trace-jobs'),
+        fetch('/api/sfdc/logs/trace-flags/all')
       ]);
 
       if (!tracesRes.ok || !jobsRes.ok) throw new Error('Failed to fetch trace data');
@@ -38,6 +44,11 @@ export const useTraceManagement = () => {
 
       setTraces(tracesData);
       setJobs(jobsData);
+
+      if (allFlagsRes.ok) {
+        const allFlagsData = await allFlagsRes.json();
+        setAllSfdcTraceFlags(allFlagsData);
+      }
     } catch (err) {
       setError('Failed to fetch trace management data');
       console.error(err);
@@ -83,6 +94,31 @@ export const useTraceManagement = () => {
     }
   };
 
+  const handleAdoptTrace = async (traceFlag: TraceFlagDto) => {
+    setAdoptingId(traceFlag.Id);
+    try {
+      const response = await fetch('/api/sfdc/logs/trace-jobs/adopt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(traceFlag),
+      });
+
+      if (response.ok) {
+        await fetchData();
+        setViewMode('managed');
+      } else if (response.status === 409) {
+        const errorData = await response.json();
+        alert(errorData.error || 'This trace flag is already managed.');
+      } else {
+        throw new Error('Failed to adopt trace flag');
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to adopt trace flag');
+    } finally {
+      setAdoptingId(null);
+    }
+  };
+
   const combinedData = useMemo(() => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -103,6 +139,7 @@ export const useTraceManagement = () => {
           name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
           type: t.TracedEntity?.attributes?.type || 'Unknown',
           level: t.DebugLevel?.DeveloperName || 'Unknown',
+          logType: t.LogType || 'Unknown',
           startTime: t.StartDate || '',
           endTime: t.ExpirationDate || '',
           source: 'SFDC' as const,
@@ -129,6 +166,7 @@ export const useTraceManagement = () => {
           name: j.tracedEntityName || j.tracedEntityId,
           type: j.tracedEntityType,
           level: j.debugLevelName,
+          logType: 'N/A',
           startTime: j.startTime,
           endTime: j.endTime,
           source: 'APP' as const,
@@ -153,6 +191,32 @@ export const useTraceManagement = () => {
     return Array.from(latestByEntity.values());
   }, [traces, jobs]);
 
+  // All SFDC flags formatted for the "Salesforce Trace Flags" tab
+  const sfdcFlagsData = useMemo(() => {
+    const now = Date.now();
+    const managedSfdcIds = new Set(jobs.map(j => j.sfdcTraceFlagId).filter(Boolean));
+
+    return allSfdcTraceFlags.map(t => {
+      const expiration = t.ExpirationDate ? new Date(t.ExpirationDate).getTime() : 0;
+      const isActive = expiration > now;
+      const isManaged = managedSfdcIds.has(t.Id);
+
+      return {
+        id: t.Id,
+        tracedEntityId: t.TracedEntityId,
+        name: t.TracedEntity?.Name || t.TracedEntityId || 'Unknown',
+        type: t.TracedEntity?.attributes?.type || 'Unknown',
+        level: t.DebugLevel?.DeveloperName || 'Unknown',
+        logType: t.LogType || 'Unknown',
+        startTime: t.StartDate || '',
+        endTime: t.ExpirationDate || '',
+        status: isActive ? 'ACTIVE' : 'EXPIRED',
+        isManaged,
+        raw: t
+      };
+    });
+  }, [allSfdcTraceFlags, jobs]);
+
   return {
     traces,
     jobs,
@@ -161,8 +225,13 @@ export const useTraceManagement = () => {
     fetchData,
     handleDeleteTrace,
     handleDeleteJob,
+    handleAdoptTrace,
     combinedData,
+    sfdcFlagsData,
     selectedTrace,
-    setSelectedTrace
+    setSelectedTrace,
+    viewMode,
+    setViewMode,
+    adoptingId
   };
 };

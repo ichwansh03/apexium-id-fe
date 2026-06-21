@@ -125,4 +125,5 @@ export interface TraceFlagDto {
   DebugLevel?: {
     DeveloperName?: string;
   };
+  LogType?: string;
 }

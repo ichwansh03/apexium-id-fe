@@ -30,6 +30,68 @@
   color: white;
 }
 
+/* Tab Bar */
+.trace-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  padding-bottom: 0;
+}
+
+.trace-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text, #6b7280);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.trace-tab:hover {
+  color: var(--text-h, #111827);
+  background-color: var(--hover-bg, rgba(0, 0, 0, 0.03));
+}
+
+.trace-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 1.1rem;
+}
+
+.tab-badge {
+  background-color: var(--accent-bg, #eef2ff);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.tab-badge.sfdc {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.trace-section-desc {
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+/* Badges */
 .type-badge {
   background-color: var(--accent-bg);
   color: var(--accent);
@@ -39,9 +101,41 @@
   font-weight: 600;
 }
 
+.log-type-badge {
+  background-color: #f0fdf4;
+  color: #166534;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .font-bold {
   font-weight: 600;
   color: var(--text-h);
+}
+
+/* Status Badges */
+.status-badge.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.completed, .status-badge.expired {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Action Buttons */
+.action-group {
+  display: flex;
+  gap: 6px;
 }
 
 .delete-btn {
@@ -64,17 +158,38 @@
   color: white;
 }
 
-.status-badge.active {
-  background-color: #d1fae5;
-  color: #065f46;
+.adopt-btn {
+  border-color: #10b981;
+  color: #10b981;
 }
 
-.status-badge.completed, .status-badge.expired {
-  background-color: #f3f4f6;
-  color: #6b7280;
+.adopt-btn:hover:not(:disabled) {
+  background-color: #10b981;
+  color: white;
 }
 
-.status-badge.cancelled {
-  background-color: #fee2e2;
-  color: #991b1b;
+.adopt-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.managed-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background-color: var(--accent-bg, #eef2ff);
+  color: var(--accent);
+}
+
+/* Expired row styling */
+.row-expired td {
+  opacity: 0.6;
+}
+
+.row-expired:hover td {
+  opacity: 0.85;
 }
