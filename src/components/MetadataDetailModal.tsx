@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './MetadataDetailModal.css';
 import LoadingSpinner from './LoadingSpinner';
 import type { MetadataDetailDto } from '../types';
+import DiffViewer from './DiffViewer';
 
 interface MetadataDetailModalProps {
   entityId: string;
@@ -13,6 +14,8 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
   const [detail, setDetail] = useState<MetadataDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [diff, setDiff] = useState<string[] | null>(null);
+  const [showDiff, setShowDiff] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -32,6 +35,19 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
     fetchDetail();
   }, [entityId, entityType]);
 
+  const handleCompare = async () => {
+    try {
+      const response = await fetch(`/api/sfdc/metadata/compare/${entityType}/${entityId}`);
+      if (!response.ok) throw new Error('Failed to fetch comparison');
+      const data = await response.json();
+      setDiff(data);
+      setShowDiff(true);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to fetch comparison');
+    }
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content metadata-detail-modal" onClick={(e) => e.stopPropagation()}>
@@ -47,8 +63,14 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
           {error && (
             <div className="error-message">{error}</div>
           )}
-          {detail && (
+          {showDiff && diff ? (
             <div className="detail-container">
+                <button onClick={() => setShowDiff(false)}>Back to Details</button>
+                <DiffViewer oldValue="" newValue={diff.join('\n')} />
+            </div>
+          ) : detail && (
+            <div className="detail-container">
+              <button onClick={handleCompare}>Compare with previous version</button>
               <div className="detail-grid">
                 <div className="detail-item">
                   <label htmlFor="detail-name">Name</label>
