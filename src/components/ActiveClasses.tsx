@@ -21,6 +21,7 @@ const ActiveClasses: React.FC = () => {
   } = useActiveClasses();
 
   const [detailClass, setDetailClass] = useState<ApexClass | null>(null);
+  const [compareMode, setCompareMode] = useState<boolean>(false);
 
   if (loading && classes.length === 0) return (
     <LoadingSpinner 
@@ -87,9 +88,21 @@ const ActiveClasses: React.FC = () => {
                   </button>
                   <button 
                     className="action-btn view-btn" 
-                    onClick={() => setDetailClass(cls)}
+                    onClick={() => {
+                      setDetailClass(cls);
+                      setCompareMode(false);
+                    }}
                   >
                     Details
+                  </button>
+                  <button 
+                    className="action-btn" 
+                    onClick={() => {
+                      setDetailClass(cls);
+                      setCompareMode(true);
+                    }}
+                  >
+                    Compare
                   </button>
                 </td>
               </tr>
@@ -135,6 +148,7 @@ const ActiveClasses: React.FC = () => {
           entityId={detailClass.sfdcId}
           entityType="ApexClass"
           onClose={() => setDetailClass(null)}
+          initialShowDiff={compareMode}
         />
       )}
     </div>

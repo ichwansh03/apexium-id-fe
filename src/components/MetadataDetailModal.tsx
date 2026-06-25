@@ -8,14 +8,15 @@ interface MetadataDetailModalProps {
   entityId: string;
   entityType: string;
   onClose: () => void;
+  initialShowDiff?: boolean;
 }
 
-const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, entityType, onClose }) => {
+const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, entityType, onClose, initialShowDiff }) => {
   const [detail, setDetail] = useState<MetadataDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [diff, setDiff] = useState<string[] | null>(null);
-  const [showDiff, setShowDiff] = useState(false);
+  const [showDiff] = useState(initialShowDiff || false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -25,6 +26,18 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
         if (!response.ok) throw new Error('Failed to fetch metadata details');
         const data = await response.json();
         setDetail(data);
+
+        if (initialShowDiff) {
+          try {
+            const compareResponse = await fetch(`/api/sfdc/metadata/compare/${entityType}/${entityId}`);
+            if (!compareResponse.ok) throw new Error('Failed to fetch comparison');
+            const compareData = await compareResponse.json();
+            setDiff(compareData);
+          } catch (compareErr) {
+            console.error(compareErr);
+            setError(compareErr instanceof Error ? compareErr.message : 'Failed to fetch comparison');
+          }
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -33,20 +46,7 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
     };
 
     fetchDetail();
-  }, [entityId, entityType]);
-
-  const handleCompare = async () => {
-    try {
-      const response = await fetch(`/api/sfdc/metadata/compare/${entityType}/${entityId}`);
-      if (!response.ok) throw new Error('Failed to fetch comparison');
-      const data = await response.json();
-      setDiff(data);
-      setShowDiff(true);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to fetch comparison');
-    }
-  };
+  }, [entityId, entityType, initialShowDiff]);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -65,12 +65,10 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
           )}
           {showDiff && diff ? (
             <div className="detail-container">
-                <button onClick={() => setShowDiff(false)}>Back to Details</button>
                 <DiffViewer oldValue="" newValue={diff.join('\n')} />
             </div>
           ) : detail && (
             <div className="detail-container">
-              <button onClick={handleCompare}>Compare with previous version</button>
               <div className="detail-grid">
                 <div className="detail-item">
                   <label htmlFor="detail-name">Name</label>

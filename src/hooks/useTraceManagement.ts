@@ -191,9 +191,10 @@ export const useTraceManagement = () => {
     return Array.from(latestByEntity.values());
   }, [traces, jobs]);
 
+  const [now] = useState(() => Date.now());
+
   // All SFDC flags formatted for the "Salesforce Trace Flags" tab
   const sfdcFlagsData = useMemo(() => {
-    const now = Date.now();
     const managedSfdcIds = new Set(jobs.map(j => j.sfdcTraceFlagId).filter(Boolean));
 
     return allSfdcTraceFlags.map(t => {
@@ -215,7 +216,7 @@ export const useTraceManagement = () => {
         raw: t
       };
     });
-  }, [allSfdcTraceFlags, jobs]);
+  }, [allSfdcTraceFlags, jobs, now]);
 
   return {
     traces,
