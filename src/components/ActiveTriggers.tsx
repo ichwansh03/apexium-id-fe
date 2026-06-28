@@ -72,7 +72,7 @@ const ActiveTriggers: React.FC = () => {
                 <td className="api-name">{trigger.sobject}</td>
                 <td className="coverage-cell">
                   <span className={`coverage-badge ${
-                    parseInt(calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)) >= 75 ? 'good' : 'poor'
+                    Number.parseInt(calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)) >= 75 ? 'good' : 'poor'
                   }`}>
                     {calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)}
                   </span>
