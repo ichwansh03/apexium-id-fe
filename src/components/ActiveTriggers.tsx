@@ -21,6 +21,7 @@ const ActiveTriggers: React.FC = () => {
   } = useActiveTriggers();
 
   const [detailTrigger, setDetailTrigger] = useState<ApexTrigger | null>(null);
+  const [compareMode, setCompareMode] = useState<boolean>(false);
 
   if (loading && triggers.length === 0) return (
     <LoadingSpinner 
@@ -71,7 +72,7 @@ const ActiveTriggers: React.FC = () => {
                 <td className="api-name">{trigger.sobject}</td>
                 <td className="coverage-cell">
                   <span className={`coverage-badge ${
-                    parseInt(calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)) >= 75 ? 'good' : 'poor'
+                    Number.parseInt(calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)) >= 75 ? 'good' : 'poor'
                   }`}>
                     {calculateCoverage(trigger.numLinesCovered, trigger.numLinesUncovered)}
                   </span>
@@ -87,9 +88,21 @@ const ActiveTriggers: React.FC = () => {
                   </button>
                   <button 
                     className="action-btn view-btn" 
-                    onClick={() => setDetailTrigger(trigger)}
+                    onClick={() => {
+                      setDetailTrigger(trigger);
+                      setCompareMode(false);
+                    }}
                   >
                     Details
+                  </button>
+                  <button 
+                    className="action-btn" 
+                    onClick={() => {
+                      setDetailTrigger(trigger);
+                      setCompareMode(true);
+                    }}
+                  >
+                    Compare
                   </button>
                 </td>
               </tr>
@@ -135,6 +148,7 @@ const ActiveTriggers: React.FC = () => {
           entityId={detailTrigger.sfdcId}
           entityType="ApexTrigger"
           onClose={() => setDetailTrigger(null)}
+          initialShowDiff={compareMode}
         />
       )}
     </div>
