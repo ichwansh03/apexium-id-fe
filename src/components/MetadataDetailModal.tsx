@@ -4,6 +4,11 @@ import LoadingSpinner from './LoadingSpinner';
 import type { MetadataDetailDto } from '../types';
 import DiffViewer from './DiffViewer';
 
+interface MetadataDiffDto {
+  previousBody: string;
+  latestBody: string;
+}
+
 interface MetadataDetailModalProps {
   entityId: string;
   entityType: string;
@@ -15,7 +20,7 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
   const [detail, setDetail] = useState<MetadataDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [diff, setDiff] = useState<string[] | null>(null);
+  const [diff, setDiff] = useState<MetadataDiffDto | null>(null);
   const [showDiff] = useState(initialShowDiff || false);
 
   useEffect(() => {
@@ -65,7 +70,7 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
           )}
           {showDiff && diff ? (
             <div className="detail-container">
-                <DiffViewer oldValue="" newValue={diff.join('\n')} />
+                <DiffViewer oldValue={diff.previousBody} newValue={diff.latestBody} />
             </div>
           ) : detail && (
             <div className="detail-container">
