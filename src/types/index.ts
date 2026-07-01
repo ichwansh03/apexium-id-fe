@@ -1,3 +1,8 @@
+export interface MetadataDiffDto {
+  previousBody: string;
+  latestBody: string;
+}
+
 export interface UserSummaryDto {
   Name?: string;
 }
