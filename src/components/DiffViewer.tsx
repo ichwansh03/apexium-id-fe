@@ -6,6 +6,21 @@ interface DiffViewerProps {
   newValue: string;
 }
 
+const diffViewerStyles = {
+  contentText: {
+    textAlign: 'left' as const,
+    whiteSpace: 'pre' as const,
+    fontFamily: 'var(--mono, monospace)',
+    fontSize: '0.85rem',
+  },
+  content: {
+    textAlign: 'left' as const,
+  },
+  line: {
+    wordBreak: 'normal' as const,
+  },
+};
+
 const DiffViewer: React.FC<DiffViewerProps> = ({ oldValue, newValue }) => {
   return (
     <ReactDiffViewer
@@ -13,6 +28,7 @@ const DiffViewer: React.FC<DiffViewerProps> = ({ oldValue, newValue }) => {
       newValue={newValue}
       splitView={true}
       useDarkTheme={window.matchMedia('(prefers-color-scheme: dark)').matches}
+      styles={diffViewerStyles}
     />
   );
 };
