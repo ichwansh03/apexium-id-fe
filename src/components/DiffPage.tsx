@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import DiffViewer from './DiffViewer';
 import LoadingSpinner from './LoadingSpinner';
 import type { MetadataDiffDto } from '../types';
+import './DiffPage.css';
 
 const DiffPage: React.FC = () => {
   const { entityType, entityId } = useParams<{ entityType: string; entityId: string }>();
@@ -37,7 +38,9 @@ const DiffPage: React.FC = () => {
         <button onClick={() => navigate(-1)}>Back</button>
         <h3>Diff View: {entityId}</h3>
       </div>
-      {diff && <DiffViewer oldValue={diff.previousBody} newValue={diff.latestBody} />}
+      <div className="diff-viewer-wrapper">
+        {diff && <DiffViewer oldValue={diff.previousBody} newValue={diff.latestBody} />}
+      </div>
     </div>
   );
 };

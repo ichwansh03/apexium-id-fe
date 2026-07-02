@@ -7,6 +7,7 @@ import ActiveUsers from './components/ActiveUsers'
 import ActiveClasses from './components/ActiveClasses'
 import ActiveTriggers from './components/ActiveTriggers'
 import ActiveDebugLevels from './components/ActiveDebugLevels'
+import DiffPage from './components/DiffPage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/active-classes" element={<ActiveClasses />} />
             <Route path="/active-triggers" element={<ActiveTriggers />} />
             <Route path="/debug-levels" element={<ActiveDebugLevels />} />
+            <Route path="/compare/:entityType/:entityId" element={<DiffPage />} />
           </Routes>
         </main>
         <footer className="app-footer">
