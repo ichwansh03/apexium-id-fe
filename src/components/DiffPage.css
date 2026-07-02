@@ -1,0 +1,25 @@
+.diff-page-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent page-level scroll */
+}
+
+.diff-page-header {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0; /* Header should not shrink */
+}
+
+.diff-viewer-wrapper {
+  flex-grow: 1;
+  overflow: auto; /* Handle both axes if necessary */
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  min-width: 0; /* Crucial for flexbox children to handle overflow */
+}

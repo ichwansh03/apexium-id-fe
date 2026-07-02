@@ -15,9 +15,15 @@ const diffViewerStyles = {
   },
   content: {
     textAlign: 'left' as const,
+    width: 'auto', // Allow it to expand naturally
   },
   line: {
     wordBreak: 'normal' as const,
+    whiteSpace: 'pre' as const, // Ensure long lines don't wrap
+  },
+  diffContainer: {
+    width: 'auto', // Allow it to expand naturally
+    minWidth: '100%',
   },
 };
 
