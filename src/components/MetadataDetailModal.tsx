@@ -144,23 +144,6 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
                           {detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered}
                         </span>
                       </div>
-                      <div className="coverage-label">Lines Covered</div>
-                    </div>
-                    <div className="coverage-stats">
-                      <div className="stat-item">
-                        <span className="stat-label">Covered Lines:</span>
-                        <span className="stat-value good">{detail.coverage.numLinesCovered}</span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Uncovered Lines:</span>
-                        <span className="stat-value poor">{detail.coverage.numLinesUncovered}</span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Total Lines:</span>
-                        <span className="stat-value">
-                          {detail.coverage.numLinesCovered + detail.coverage.numLinesUncovered}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>

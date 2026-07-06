@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import LoadingSpinner from './LoadingSpinner';
+import MetadataDetailModal from './MetadataDetailModal';
 import { useActiveClasses } from '../hooks/useActiveClasses';
+import type { ApexClass } from '../types';
 
 const ActiveClasses: React.FC = () => {
   const {
@@ -19,6 +21,7 @@ const ActiveClasses: React.FC = () => {
     handleSearchChange
   } = useActiveClasses();
 
+  const [detailTarget, setDetailTarget] = useState<ApexClass | null>(null);
   const navigate = useNavigate();
 
   if (loading && classes.length === 0) return (
@@ -86,14 +89,7 @@ const ActiveClasses: React.FC = () => {
                   </button>
                   <button 
                     className="action-btn view-btn" 
-                    onClick={() => {
-                        // Assuming Details action should still exist or be migrated.
-                        // Based on plan, only Compare needs navigation.
-                        // I will keep it for now as a placeholder or remove if unnecessary?
-                        // Let's assume it should navigate too or keep modal?
-                        // User said: "if I click the compare button is still shown detail modal".
-                        // Let's just update the Compare button and keep details as is.
-                    }}
+                    onClick={() => setDetailTarget(cls)}
                   >
                     Details
                   </button>
@@ -139,6 +135,14 @@ const ActiveClasses: React.FC = () => {
           entityName={selectedClass.name}
           entityType="ApexClass"
           onClose={() => setSelectedClass(null)}
+        />
+      )}
+
+      {detailTarget && (
+        <MetadataDetailModal
+          entityId={detailTarget.sfdcId}
+          entityType="ApexClass"
+          onClose={() => setDetailTarget(null)}
         />
       )}
     </div>
