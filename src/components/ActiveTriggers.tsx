@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MetadataViews.css';
 import AddTraceModal from './AddTraceModal';
 import LoadingSpinner from './LoadingSpinner';
+import MetadataDetailModal from './MetadataDetailModal';
 import { useActiveTriggers } from '../hooks/useActiveTriggers';
+import type { ApexTrigger } from '../types';
 
 const ActiveTriggers: React.FC = () => {
   const {
@@ -19,6 +21,7 @@ const ActiveTriggers: React.FC = () => {
     handleSearchChange
   } = useActiveTriggers();
 
+  const [detailTarget, setDetailTarget] = useState<ApexTrigger | null>(null);
   const navigate = useNavigate();
 
   if (loading && triggers.length === 0) return (
@@ -86,9 +89,7 @@ const ActiveTriggers: React.FC = () => {
                   </button>
                   <button 
                     className="action-btn view-btn" 
-                    onClick={() => {
-                        // Details logic remains.
-                    }}
+                    onClick={() => setDetailTarget(trigger)}
                   >
                     Details
                   </button>
@@ -134,6 +135,14 @@ const ActiveTriggers: React.FC = () => {
           entityName={`${selectedTrigger.name} on ${selectedTrigger.sobject}`}
           entityType="ApexTrigger"
           onClose={() => setSelectedTrigger(null)}
+        />
+      )}
+
+      {detailTarget && (
+        <MetadataDetailModal
+          entityId={detailTarget.sfdcId}
+          entityType="ApexTrigger"
+          onClose={() => setDetailTarget(null)}
         />
       )}
     </div>
