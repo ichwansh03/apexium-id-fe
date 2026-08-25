@@ -1,8 +1,8 @@
 import React from 'react';
-import './MetadataViews.css';
-import AddTraceModal from './AddTraceModal';
-import LoadingSpinner from './LoadingSpinner';
-import { useActiveUsers } from '../hooks/useActiveUsers';
+import '../../shared/styles/MetadataViews.css';
+import AddTraceModal from '../../trace/AddTraceModal/AddTraceModal';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import { useActiveUsers } from '../../../hooks/useActiveUsers';
 
 const ActiveUsers: React.FC = () => {
   const {
@@ -111,4 +111,3 @@ const ActiveUsers: React.FC = () => {
 };
 
 export default ActiveUsers;
-

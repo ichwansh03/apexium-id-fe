@@ -1,0 +1,40 @@
+.diff-page-container {
+  padding: 2rem;
+}
+
+.diff-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.diff-page-header button {
+  padding: 0.5rem 1rem;
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.diff-page-header button:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.diff-page-header h3 {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 1.2rem;
+}
+
+.diff-viewer-wrapper {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+  padding: 1rem;
+}

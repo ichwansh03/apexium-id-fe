@@ -50,20 +50,18 @@
 }
 
 .sidebar-custom-icon {
-  width: 20px;   /* Adjust size as needed */
+  width: 20px;
   height: 20px;
   object-fit: contain;
   display: block;
 }
 
-/* Ensure the icon span centers the image */
 .sidebar-link .icon {
    display: flex;
    align-items: center;
    justify-content: center;
    min-width: 30px;
 }
-
 
 .toggle-btn:hover {
   background-color: var(--accent-bg);

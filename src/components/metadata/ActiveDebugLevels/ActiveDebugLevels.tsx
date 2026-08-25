@@ -1,7 +1,7 @@
 import React from 'react';
-import './MetadataViews.css';
-import LoadingSpinner from './LoadingSpinner';
-import { useActiveDebugLevels } from '../hooks/useActiveDebugLevels';
+import '../../shared/styles/MetadataViews.css';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import { useActiveDebugLevels } from '../../../hooks/useActiveDebugLevels';
 
 const ActiveDebugLevels: React.FC = () => {
   const {
@@ -94,4 +94,3 @@ const ActiveDebugLevels: React.FC = () => {
 };
 
 export default ActiveDebugLevels;
-

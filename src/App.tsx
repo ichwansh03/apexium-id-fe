@@ -1,13 +1,13 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
-import Sidebar from './components/Sidebar'
-import LogList from './components/LogList'
-import TraceManagement from './components/TraceManagement'
-import ActiveUsers from './components/ActiveUsers'
-import ActiveClasses from './components/ActiveClasses'
-import ActiveTriggers from './components/ActiveTriggers'
-import ActiveDebugLevels from './components/ActiveDebugLevels'
-import DiffPage from './components/DiffPage'
+import Sidebar from './components/layout/Sidebar/Sidebar'
+import LogList from './components/logs/LogList/LogList'
+import TraceManagement from './components/trace/TraceManagement/TraceManagement'
+import ActiveUsers from './components/metadata/ActiveUsers/ActiveUsers'
+import ActiveClasses from './components/metadata/ActiveClasses/ActiveClasses'
+import ActiveTriggers from './components/metadata/ActiveTriggers/ActiveTriggers'
+import ActiveDebugLevels from './components/metadata/ActiveDebugLevels/ActiveDebugLevels'
+import DiffPage from './components/diff/DiffPage/DiffPage'
 
 function App() {
   return (
