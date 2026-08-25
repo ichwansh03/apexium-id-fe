@@ -1,7 +1,7 @@
 import React from 'react';
 import './AddTraceModal.css';
-import LoadingSpinner from './LoadingSpinner';
-import { useAddTraceModal } from '../hooks/useAddTraceModal';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import { useAddTraceModal } from '../../../hooks/useAddTraceModal';
 
 interface AddTraceModalProps {
   entityId: string;
@@ -148,4 +148,3 @@ const AddTraceModal: React.FC<AddTraceModalProps> = ({ entityId, entityName, ent
 };
 
 export default AddTraceModal;
-

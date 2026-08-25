@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './MetadataDetailModal.css';
-import LoadingSpinner from './LoadingSpinner';
-import type { MetadataDetailDto } from '../types';
-import DiffViewer from './DiffViewer';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import type { MetadataDetailDto } from '../../../types';
+import DiffViewer from '../../diff/DiffViewer/DiffViewer';
 
 interface MetadataDiffDto {
   previousBody: string;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import DiffViewer from './DiffViewer';
-import LoadingSpinner from './LoadingSpinner';
-import type { MetadataDiffDto } from '../types';
+import DiffViewer from '../DiffViewer/DiffViewer';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import type { MetadataDiffDto } from '../../../types';
 import './DiffPage.css';
 
 const DiffPage: React.FC = () => {

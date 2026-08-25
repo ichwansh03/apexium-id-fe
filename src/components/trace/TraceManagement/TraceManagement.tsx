@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import './TraceFlagManager.css';
-import LoadingSpinner from './LoadingSpinner';
-import AddTraceModal from './AddTraceModal';
-import { useTraceManagement } from '../hooks/useTraceManagement';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import AddTraceModal from '../AddTraceModal/AddTraceModal';
+import { useTraceManagement } from '../../../hooks/useTraceManagement';
 
 const ITEMS_PER_PAGE = 10;
 

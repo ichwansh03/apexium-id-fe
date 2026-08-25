@@ -1,6 +1,6 @@
 import React from 'react';
 import './AutocompleteInput.css';
-import { useAutocomplete } from '../hooks/useAutocomplete';
+import { useAutocomplete } from '../../../hooks/useAutocomplete';
 
 interface AutocompleteInputProps {
   items: { id: string; name: string; type?: string }[];
@@ -53,4 +53,3 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ items, placeholde
 };
 
 export default AutocompleteInput;
-

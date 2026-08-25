@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MetadataViews.css';
-import AddTraceModal from './AddTraceModal';
-import LoadingSpinner from './LoadingSpinner';
-import MetadataDetailModal from './MetadataDetailModal';
-import { useActiveTriggers } from '../hooks/useActiveTriggers';
-import type { ApexTrigger } from '../types';
+import '../../shared/styles/MetadataViews.css';
+import AddTraceModal from '../../trace/AddTraceModal/AddTraceModal';
+import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
+import MetadataDetailModal from '../MetadataDetailModal/MetadataDetailModal';
+import { useActiveTriggers } from '../../../hooks/useActiveTriggers';
+import type { ApexTrigger } from '../../../types';
 
 const ActiveTriggers: React.FC = () => {
   const {
@@ -150,4 +150,3 @@ const ActiveTriggers: React.FC = () => {
 };
 
 export default ActiveTriggers;
-
