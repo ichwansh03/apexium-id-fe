@@ -44,10 +44,7 @@ const ActiveReports: React.FC = () => {
           <thead>
             <tr>
               <th className="col-report-name">Name</th>
-              <th className="col-report-desc">Description</th>
               <th className="col-report-folder">Folder</th>
-              <th className="col-report-format">Format</th>
-              <th className="col-report-type">Type</th>
               <th className="col-report-date">Last Modified</th>
               <th className="col-report-modifiedby">Modified By</th>
             </tr>
@@ -56,17 +53,14 @@ const ActiveReports: React.FC = () => {
             {reports.map((report) => (
               <tr key={report.sfdcId}>
                 <td className="entity-name">{report.name}</td>
-                <td className="report-description">{report.description || '—'}</td>
                 <td>{report.folderName || '—'}</td>
-                <td><span className="status-badge">{report.format || '—'}</span></td>
-                <td>{report.reportType || '—'}</td>
                 <td>{report.lastModifiedDate ? new Date(report.lastModifiedDate).toLocaleDateString() : '—'}</td>
                 <td>{report.lastModifiedByName || '—'}</td>
               </tr>
             ))}
             {reports.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>No reports found</td>
+                <td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>No reports found</td>
               </tr>
             )}
           </tbody>
