@@ -1,0 +1,17 @@
+/* Report Table Columns */
+.col-report-name { width: 200px; }
+.col-report-desc { width: 200px; }
+.col-report-folder { width: 150px; }
+.col-report-format { width: 100px; }
+.col-report-type { width: 150px; }
+.col-report-date { width: 130px; }
+.col-report-modifiedby { width: 150px; }
+
+.report-description {
+  font-size: 0.9rem;
+  color: var(--text);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

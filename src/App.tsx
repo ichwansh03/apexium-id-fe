@@ -6,6 +6,7 @@ import TraceManagement from './components/trace/TraceManagement/TraceManagement'
 import ActiveUsers from './components/metadata/ActiveUsers/ActiveUsers'
 import ActiveClasses from './components/metadata/ActiveClasses/ActiveClasses'
 import ActiveTriggers from './components/metadata/ActiveTriggers/ActiveTriggers'
+import ActiveReports from './components/metadata/ActiveReports/ActiveReports'
 import ActiveDebugLevels from './components/metadata/ActiveDebugLevels/ActiveDebugLevels'
 import DiffPage from './components/diff/DiffPage/DiffPage'
 
@@ -21,6 +22,7 @@ function App() {
             <Route path="/active-users" element={<ActiveUsers />} />
             <Route path="/active-classes" element={<ActiveClasses />} />
             <Route path="/active-triggers" element={<ActiveTriggers />} />
+            <Route path="/active-reports" element={<ActiveReports />} />
             <Route path="/debug-levels" element={<ActiveDebugLevels />} />
             <Route path="/compare/:entityType/:entityId" element={<DiffPage />} />
           </Routes>
