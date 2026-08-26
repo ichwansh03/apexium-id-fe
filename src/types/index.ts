@@ -136,11 +136,8 @@ export interface TraceFlagDto {
 export interface ReportDto {
   id: string;
   name?: string;
-  description?: string;
   developerName?: string;
   folderName?: string;
-  format?: string;
-  reportType?: string;
   createdDate?: string;
   createdBy?: UserSummaryDto;
   lastModifiedDate?: string;
@@ -150,11 +147,8 @@ export interface ReportDto {
 export interface Report {
   sfdcId: string;
   name: string;
-  description?: string;
   developerName?: string;
   folderName?: string;
-  format?: string;
-  reportType?: string;
   createdDate?: string;
   createdByName?: string;
   lastModifiedDate?: string;
