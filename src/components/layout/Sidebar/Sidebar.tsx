@@ -75,6 +75,9 @@ const Sidebar: React.FC = () => {
               <NavLink to="/active-triggers" className={({ isActive }) => `submenu-link ${isActive ? 'active' : ''}`}>
                 <span className="dot">•</span> Triggers
               </NavLink>
+              <NavLink to="/active-reports" className={({ isActive }) => `submenu-link ${isActive ? 'active' : ''}`}>
+                <span className="dot">•</span> Reports
+              </NavLink>
             </div>
           )}
         </div>

@@ -132,3 +132,31 @@ export interface TraceFlagDto {
   };
   LogType?: string;
 }
+
+export interface ReportDto {
+  id: string;
+  name?: string;
+  description?: string;
+  developerName?: string;
+  folderName?: string;
+  format?: string;
+  reportType?: string;
+  createdDate?: string;
+  createdBy?: UserSummaryDto;
+  lastModifiedDate?: string;
+  lastModifiedBy?: UserSummaryDto;
+}
+
+export interface Report {
+  sfdcId: string;
+  name: string;
+  description?: string;
+  developerName?: string;
+  folderName?: string;
+  format?: string;
+  reportType?: string;
+  createdDate?: string;
+  createdByName?: string;
+  lastModifiedDate?: string;
+  lastModifiedByName?: string;
+}
