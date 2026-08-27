@@ -3,31 +3,98 @@
 .col-report-folder { width: 200px; }
 .col-report-date { width: 150px; }
 .col-report-modifiedby { width: 180px; }
-.col-report-actions { width: 120px; }
+.col-report-actions { width: 100px; }
 
 /* SOQL Modal */
 .soql-modal {
-  max-width: 700px;
+  max-width: 750px;
   width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
-.soql-info {
-  display: flex;
+/* Open in Salesforce button */
+.open-report-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
   font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.open-report-btn:hover {
+  opacity: 0.85;
+}
+
+/* Info Grid */
+.soql-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.soql-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .soql-label {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .soql-value {
-  color: var(--text);
+  font-size: 0.9rem;
+  color: var(--text-h);
+  font-weight: 500;
 }
 
+/* Sections */
+.soql-section {
+  margin-top: 16px;
+}
+
+.soql-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-h);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Object tags */
+.objects-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.object-tag {
+  padding: 4px 12px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* SOQL Code Block */
 .soql-code-container {
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -38,12 +105,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 10px 12px;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-h);
+  border-radius: 8px 8px 0 0;
 }
 
 .copy-btn {
@@ -74,4 +139,11 @@
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-all;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.rest-api-code {
+  color: var(--accent);
 }

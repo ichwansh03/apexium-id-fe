@@ -175,8 +175,18 @@ export interface ReportMetadataDto {
   developerName?: string;
 }
 
+export interface ReportCategoryDto {
+  name?: string;
+  label?: string;
+}
+
+export interface ReportTypeMetadataDto {
+  categories?: ReportCategoryDto[];
+}
+
 export interface ReportDescribeDto {
   reportMetadata?: ReportMetadataDto;
+  reportTypeMetadata?: ReportTypeMetadataDto;
 }
 
 export interface ReportSoqlDto {
@@ -185,4 +195,12 @@ export interface ReportSoqlDto {
   rootObject?: string;
   soql: string;
   filters: ReportFilterDto[];
+  reportType?: {
+    type?: string;
+    label?: string;
+  };
+  reportFormat?: string;
+  objects: string[];
+  describeUrl?: string;
+  reportUrl?: string;
 }
