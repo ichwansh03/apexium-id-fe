@@ -154,3 +154,35 @@ export interface Report {
   lastModifiedDate?: string;
   lastModifiedByName?: string;
 }
+
+export interface ReportFilterDto {
+  column?: string;
+  operator?: string;
+  value?: string;
+}
+
+export interface ReportMetadataDto {
+  id?: string;
+  name?: string;
+  reportFormat?: string;
+  reportType?: {
+    type?: string;
+    label?: string;
+  };
+  detailColumns?: string[];
+  reportFilters?: ReportFilterDto[];
+  reportBooleanFilter?: string;
+  developerName?: string;
+}
+
+export interface ReportDescribeDto {
+  reportMetadata?: ReportMetadataDto;
+}
+
+export interface ReportSoqlDto {
+  reportId: string;
+  reportName?: string;
+  rootObject?: string;
+  soql: string;
+  filters: ReportFilterDto[];
+}
