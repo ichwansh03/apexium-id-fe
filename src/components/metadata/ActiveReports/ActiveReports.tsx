@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../shared/styles/MetadataViews.css';
 import './ActiveReports.css';
 import LoadingSpinner from '../../common/LoadingSpinner/LoadingSpinner';
 import { useReports } from '../../../hooks/useReports';
+import type { ReportSoqlDto } from '../../../types';
 
 const ActiveReports: React.FC = () => {
   const {
@@ -15,6 +16,33 @@ const ActiveReports: React.FC = () => {
     handlePrevPage,
     handleSearchChange
   } = useReports();
+
+  const [soqlData, setSoqlData] = useState<ReportSoqlDto | null>(null);
+  const [soqlLoading, setSoqlLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleViewSoql = async (reportId: string) => {
+    setSoqlLoading(true);
+    setSoqlData(null);
+    try {
+      const response = await fetch(`/api/sfdc/metadata/reports/${reportId}/soql`);
+      if (!response.ok) throw new Error('Failed to fetch SOQL');
+      const data = await response.json();
+      setSoqlData(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSoqlLoading(false);
+    }
+  };
+
+  const handleCopy = () => {
+    if (soqlData?.soql) {
+      navigator.clipboard.writeText(soqlData.soql);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   if (loading && reports.length === 0) return (
     <LoadingSpinner 
@@ -47,6 +75,7 @@ const ActiveReports: React.FC = () => {
               <th className="col-report-folder">Folder</th>
               <th className="col-report-date">Last Modified</th>
               <th className="col-report-modifiedby">Modified By</th>
+              <th className="col-report-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -56,11 +85,19 @@ const ActiveReports: React.FC = () => {
                 <td>{report.folderName || '—'}</td>
                 <td>{report.lastModifiedDate ? new Date(report.lastModifiedDate).toLocaleDateString() : '—'}</td>
                 <td>{report.lastModifiedByName || '—'}</td>
+                <td className="actions-cell">
+                  <button 
+                    className="action-btn view-btn"
+                    onClick={() => handleViewSoql(report.sfdcId)}
+                  >
+                    View SOQL
+                  </button>
+                </td>
               </tr>
             ))}
             {reports.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>No reports found</td>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>No reports found</td>
               </tr>
             )}
           </tbody>
@@ -83,6 +120,46 @@ const ActiveReports: React.FC = () => {
           message="Searching reports..." 
           description="Refreshing metadata from Salesforce database."
         />
+      )}
+
+      {soqlLoading && (
+        <LoadingSpinner 
+          type="overlay" 
+          message="Generating SOQL..." 
+          description="Fetching report filters from Salesforce."
+        />
+      )}
+
+      {soqlData && (
+        <div className="modal-overlay" onClick={() => setSoqlData(null)}>
+          <div className="modal-content soql-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{soqlData.reportName}</h3>
+              <button className="modal-close" onClick={() => setSoqlData(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="soql-info">
+                <span className="soql-label">Root Object:</span>
+                <span className="soql-value">{soqlData.rootObject || '—'}</span>
+              </div>
+              {soqlData.filters.length > 0 && (
+                <div className="soql-info">
+                  <span className="soql-label">Filters:</span>
+                  <span className="soql-value">{soqlData.filters.length} active</span>
+                </div>
+              )}
+              <div className="soql-code-container">
+                <div className="soql-code-header">
+                  <span>SOQL Query</span>
+                  <button className="copy-btn" onClick={handleCopy}>
+                    {copied ? '✓ Copied' : 'Copy'}
+                  </button>
+                </div>
+                <pre className="soql-code">{soqlData.soql}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
