@@ -44,6 +44,10 @@ const ActiveReports: React.FC = () => {
     }
   };
 
+  const handleCopyUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+  };
+
   if (loading && reports.length === 0) return (
     <LoadingSpinner 
       message="Searching reports..." 
@@ -90,7 +94,7 @@ const ActiveReports: React.FC = () => {
                     className="action-btn view-btn"
                     onClick={() => handleViewSoql(report.sfdcId)}
                   >
-                    View SOQL
+                    Details
                   </button>
                 </td>
               </tr>
@@ -125,7 +129,7 @@ const ActiveReports: React.FC = () => {
       {soqlLoading && (
         <LoadingSpinner 
           type="overlay" 
-          message="Generating SOQL..." 
+          message="Loading report metadata..." 
           description="Fetching report filters from Salesforce."
         />
       )}
@@ -138,25 +142,67 @@ const ActiveReports: React.FC = () => {
               <button className="modal-close" onClick={() => setSoqlData(null)}>✕</button>
             </div>
             <div className="modal-body">
-              <div className="soql-info">
-                <span className="soql-label">Root Object:</span>
-                <span className="soql-value">{soqlData.rootObject || '—'}</span>
-              </div>
-              {soqlData.filters.length > 0 && (
-                <div className="soql-info">
-                  <span className="soql-label">Filters:</span>
-                  <span className="soql-value">{soqlData.filters.length} active</span>
+              {/* Open in Salesforce */}
+              {soqlData.reportUrl && (
+                <div className="soql-section">
+                  <a 
+                    href={soqlData.reportUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="open-report-btn"
+                  >
+                    Open in Salesforce ↗
+                  </a>
                 </div>
               )}
-              <div className="soql-code-container">
+
+              {/* Report Info */}
+              <div className="soql-info-grid">
+                <div className="soql-info-item">
+                  <span className="soql-label">Report Type</span>
+                  <span className="soql-value">{soqlData.reportType?.label || soqlData.reportType?.type || '—'}</span>
+                </div>
+                <div className="soql-info-item">
+                  <span className="soql-label">Root Object</span>
+                  <span className="soql-value">{soqlData.rootObject || '—'}</span>
+                </div>
+              </div>
+
+              {/* Objects Impacted */}
+              {soqlData.objects.length > 0 && (
+                <div className="soql-section">
+                  <span className="soql-section-title">Objects Impacted</span>
+                  <div className="objects-tags">
+                    {soqlData.objects.map((obj) => (
+                      <span key={obj} className="object-tag">{obj}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SOQL Generated */}
+              <div className="soql-section">
                 <div className="soql-code-header">
-                  <span>SOQL Query</span>
+                  <span className="soql-section-title">Generated SOQL</span>
                   <button className="copy-btn" onClick={handleCopy}>
                     {copied ? '✓ Copied' : 'Copy'}
                   </button>
                 </div>
                 <pre className="soql-code">{soqlData.soql}</pre>
               </div>
+
+              {/* REST API Query */}
+              {soqlData.instanceUrl && (
+                <div className="soql-section">
+                  <div className="soql-code-header">
+                    <span className="soql-section-title">REST API Query</span>
+                    <button className="copy-btn" onClick={() => handleCopyUrl(`${soqlData.instanceUrl}/services/data/v61.0/query?q=${encodeURIComponent(soqlData.soql).replace(/%20/g, '+')}`)}>
+                      Copy URL
+                    </button>
+                  </div>
+                  <pre className="soql-code rest-api-code">{soqlData.instanceUrl}/services/data/v61.0/query?q={encodeURIComponent(soqlData.soql).replace(/%20/g, '+')}</pre>
+                </div>
+              )}
             </div>
           </div>
         </div>
