@@ -201,6 +201,6 @@ export interface ReportSoqlDto {
   };
   reportFormat?: string;
   objects: string[];
-  describeUrl?: string;
+  instanceUrl?: string;
   reportUrl?: string;
 }

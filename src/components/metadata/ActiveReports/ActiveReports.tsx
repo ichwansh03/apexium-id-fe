@@ -192,15 +192,17 @@ const ActiveReports: React.FC = () => {
               </div>
 
               {/* REST API Query */}
-              <div className="soql-section">
-                <div className="soql-code-header">
-                  <span className="soql-section-title">REST API Query</span>
-                  <button className="copy-btn" onClick={() => handleCopyUrl(`/services/data/v61.0/query?q=${encodeURIComponent(soqlData.soql)}`)}>
-                    Copy URL
-                  </button>
+              {soqlData.instanceUrl && (
+                <div className="soql-section">
+                  <div className="soql-code-header">
+                    <span className="soql-section-title">REST API Query</span>
+                    <button className="copy-btn" onClick={() => handleCopyUrl(`${soqlData.instanceUrl}/services/data/v61.0/query?q=${encodeURIComponent(soqlData.soql).replace(/%20/g, '+')}`)}>
+                      Copy URL
+                    </button>
+                  </div>
+                  <pre className="soql-code rest-api-code">{soqlData.instanceUrl}/services/data/v61.0/query?q={encodeURIComponent(soqlData.soql).replace(/%20/g, '+')}</pre>
                 </div>
-                <pre className="soql-code rest-api-code">GET /services/data/v61.0/query?q={soqlData.soql}</pre>
-              </div>
+              )}
             </div>
           </div>
         </div>
