@@ -16,9 +16,21 @@ const DiffPage: React.FC = () => {
     const fetchDiff = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/sfdc/metadata/compare/${entityType}/${entityId}`);
-        if (!response.ok) throw new Error('Failed to fetch comparison');
-        const data = await response.json();
+        // First fetch history to get the latest history ID
+        const historyResponse = await fetch(`/api/sfdc/metadata/history/${entityType}/${entityId}`);
+        if (!historyResponse.ok) throw new Error('Failed to fetch history');
+        const historyData = await historyResponse.json();
+
+        if (!historyData || historyData.length === 0) {
+          setDiff({ previousBody: '', latestBody: '' });
+          return;
+        }
+
+        // Fetch diff between current body and latest snapshot
+        const latestHistoryId = historyData[0].id;
+        const diffResponse = await fetch(`/api/sfdc/metadata/history/${entityType}/${entityId}/diff?historyId=${latestHistoryId}`);
+        if (!diffResponse.ok) throw new Error('Failed to fetch diff');
+        const data = await diffResponse.json();
         setDiff(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
