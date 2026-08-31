@@ -34,10 +34,18 @@ const MetadataDetailModal: React.FC<MetadataDetailModalProps> = ({ entityId, ent
 
         if (initialShowDiff) {
           try {
-            const compareResponse = await fetch(`/api/sfdc/metadata/compare/${entityType}/${entityId}`);
-            if (!compareResponse.ok) throw new Error('Failed to fetch comparison');
-            const compareData = await compareResponse.json();
-            setDiff(compareData);
+            // Fetch history list to get latest history ID
+            const historyResponse = await fetch(`/api/sfdc/metadata/history/${entityType}/${entityId}`);
+            if (!historyResponse.ok) throw new Error('Failed to fetch history');
+            const historyData = await historyResponse.json();
+
+            if (historyData && historyData.length > 0) {
+              const latestHistoryId = historyData[0].id;
+              const diffResponse = await fetch(`/api/sfdc/metadata/history/${entityType}/${entityId}/diff?historyId=${latestHistoryId}`);
+              if (!diffResponse.ok) throw new Error('Failed to fetch diff');
+              const compareData = await diffResponse.json();
+              setDiff(compareData);
+            }
           } catch (compareErr) {
             console.error(compareErr);
             setError(compareErr instanceof Error ? compareErr.message : 'Failed to fetch comparison');
